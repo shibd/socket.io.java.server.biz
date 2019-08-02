@@ -13,9 +13,11 @@ function setConnected(connected) {
 }
 
 function connect() {
-    var socket = new SockJS('/msg-center/gs-guide-websocket');
+    var socket = new SockJS('/msg-center/guide-websocket');
     stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
+    stompClient.connect({
+        userId: 'baozi' // 携带key
+    }, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
         stompClient.subscribe('/topic/greetings', function (greeting) {
