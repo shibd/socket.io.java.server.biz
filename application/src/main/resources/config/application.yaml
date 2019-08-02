@@ -2,6 +2,9 @@
 spring:
   application.name: msg-center
   output.ansi.enabled: always
+  mvc:
+    favicon:
+      enabled: true
 server:
   port: 8080
   servlet.context-path: /msg-center
