@@ -1,0 +1,33 @@
+#!/bin/sh
+
+set -e
+
+if [ $# -ne 1 ]
+then
+  echo "$0 TAG"
+  echo "TAG is no set, Use default 1.0-SNAPSHOT"
+  TAG=1.0-SNAPSHOT
+else
+  TAG=$1
+fi
+
+# 0. 获取APP_PATH&APP_NAME
+APP_PATH=$(cd `dirname $0`/../; pwd)
+APP_NAME=`echo $APP_PATH | awk -F "/" '{print $NF}'`
+echo APP_NAME:$APP_NAME
+echo APP_PATH:$APP_PATH
+cd $APP_PATH
+
+# 1. 测试-打包
+echo "1. 测试-打包"
+mvn clean package
+
+# 2. 打包镜像
+cd $APP_PATH/application
+echo "2. 打包镜像"
+mvn dockerfile:build -Ddocker.image.tag=$TAG
+
+# 3. 上传镜像
+echo "3. 上传镜像"
+mvn dockerfile:push -Ddocker.image.tag=$TAG
+

@@ -1,0 +1,29 @@
+# 数据库数据源以及mybatis相关配置
+spring.datasource:
+  driver-class-name: org.h2.Driver
+  url: jdbc:h2:mem:h2test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+  platform: h2
+  mintname: sa
+  password:
+  type: com.zaxxer.hikari.HikariDataSource
+  hikari:
+      connectionTimeout: 30000
+      idleTimeout: 30000
+      maxLifetime: 2000000
+      maximumPoolSize: 20
+      minimumIdle: 5
+      poolName: DF_CONN_POOL
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+
+# 内存数据库页面配置
+spring.h2:
+  console:
+    path: /h2-console
+    enabled: true
+    settings:
+      web-allow-others: true
+# flyway配置
+spring.flyway:
+  enabled: true
+  locations: classpath:/db

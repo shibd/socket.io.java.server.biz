@@ -1,0 +1,13 @@
+# 基础应用配置
+spring:
+  application.name: msg-center
+  output.ansi.enabled: always
+server:
+  port: 8080
+  servlet.context-path: /msg-center
+
+# log文件位置,建议log相关配置到文件中统一配置
+logging.config: classpath:xml/logback.xml
+
+# 集成中间件服务配置(根据工程需要选择性开关)
+spring.profiles.include: db,kafka,job,cloud

@@ -1,0 +1,26 @@
+# data source test
+spring.datasource:
+  driver-class-name: org.h2.Driver
+  url: jdbc:h2:mem:h2test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+  platform: h2
+  mintname: sa
+  password:
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:/db
+
+# kafka test
+kafka.enable: false
+spring.kafka:
+  bootstrap-servers: ${spring.embedded.kafka.brokers}
+xxx:
+  group: msg-center
+  topic: msg-center
+
+# eureka
+eureka:
+  client:
+    enabled: false

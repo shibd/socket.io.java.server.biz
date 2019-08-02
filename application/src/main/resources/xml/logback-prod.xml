@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+    <!-- 生产根据项目特性自己修改清理策略,生产环境建议关闭console日志打印(容器模式下)-->
+    <!-- import spring boot default config-->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <!-- log pattern-->
+    <property name="APP_CONSOLE" value="${APP_CONSOLE:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} [%clr(%-40.40logger{39}){cyan} %clr(%4line)] %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+    <property name="APP_FILE" value="${APP_FILE:-%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] [%-40.40logger{39} %4line] : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+
+    <!-- 基础配置-->
+    <property name="LOG_PATH_ROOT" value="${DFOCUS_LOG_ROOT:-./logs}"/>
+    <property name="LOG_APP_NAME" value="${LOG_APP_NAME:-default-app}"/>
+    <property name="LOG_PATH" value="${LOG_PATH:-${LOG_PATH_ROOT}/${LOG_APP_NAME}}" />
+
+    <!-- 输出到控制台 -->
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>
+                ${APP_CONSOLE}
+            </pattern>
+        </layout>
+    </appender>
+
+    <!-- 输出到文件 -->
+    <appender name="fileLog"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/${LOG_APP_NAME}.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>
+                ${APP_FILE}
+            </pattern>
+        </encoder>
+        <!--文件压缩清理策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${LOG_APP_NAME}-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxHistory>${FILE_MAX_HISTORY:-5}</maxHistory>
+            <maxFileSize>${FILE_MAX_SIZE:-2GB}</maxFileSize>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 默认日志级别 -->
+    <root level="INFO">
+        <appender-ref ref="fileLog" />
+    </root>
+
+    <!--
+    <logger name="java.sql.Connection" level="DEBUG" />
+    <logger name="java.sql.Statement" level="DEBUG" />
+    <logger name="java.sql.PreparedStatement" level="DEBUG" />
+    -->
+
+</configuration>

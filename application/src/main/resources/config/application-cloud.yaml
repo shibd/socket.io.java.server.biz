@@ -1,0 +1,30 @@
+# feign配置
+feign:
+  hystrix:
+    enabled: false
+  # 客户端连接配置
+  client:
+    config:
+      mint-lulu:
+       connectTimeout: 5000
+  # 请求响应压缩
+  compression:
+    request: false
+    response: false
+
+# ribbon配置(默认直连服务方)
+ribbon:
+  eureka:
+   enabloed: false
+msg-center:
+  ribbon:
+    listOfServers: 127.0.0.1:8080
+
+# eureka配置(默认关闭)
+eureka:
+  client:
+    enabled: false
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# mybatis-plus逆向生成工具
+
+set -e
+
+# 回到common工程目录
+APP_PATH=$(cd `dirname $0`/../; pwd)
+echo APP_PATH:$APP_PATH
+cd $APP_PATH/common
+
+mvn exec:java -Dgen.path=$APP_PATH/common
+

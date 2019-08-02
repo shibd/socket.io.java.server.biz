@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# 单元测试 - 打包 - 默认配置启动
+
+set -e
+
+APP_PATH=$(cd `dirname $0`/../; pwd)
+APP_NAME=`echo $APP_PATH | awk -F "/" '{print $NF}'`
+cd $APP_PATH
+echo APP_NAME:$APP_NAME
+echo APP_PATH:$APP_PATH
+
+# 0. 删除旧应用
+# mac os
+#jps | grep $APP_NAME | awk '{print $1}' | xargs -I {} kill -9 {}
+# linux
+#jps | grep $APP_NAME | awk '{print $1}' | xargs -r kill
+
+# 1. 测试-打包
+mvn clean package -Ddocker.build.skip=true
+echo "test and build success, start new process now"
+
+# 2. 启动程序, 下面为一行命令,行与行之间不能有注释,空格
+#nohup \
+java \
+-jar \
+-DLOG_PATH_ROOT=./logs \
+$APP_PATH/application/target/$APP_NAME.application.jar \
+#-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000 \
+#2>&1 1>/dev/null &
+#echo "==============start success============"

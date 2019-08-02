@@ -1,0 +1,32 @@
+#!/bin/sh
+
+set -e
+
+if [ $# -ne 1 ]
+then
+  echo "$0 TAG"
+  echo "TAG is no set, Use default 1.0-SNAPSHOT"
+  TAG=1.0-SNAPSHOT
+else
+  TAG=$1
+fi
+
+# 0. 获取APP_PATH&APP_NAME
+APP_PATH=$(cd `dirname $0`/../; pwd)
+APP_NAME=`echo $APP_PATH | awk -F "/" '{print $NF}'`
+echo APP_PATH:$APP_PATH
+echo APP_NAME:$APP_NAME
+
+# 1. 删除旧应用
+echo "stop $APP_NAME"
+docker stop $APP_NAME || true
+docker rm $APP_NAME || true
+
+# 2. 启动程序, 下面为一行命令,行与行之间不能有注释,空格
+docker run \
+ -m 500M \
+ -e LOG_PATH_ROOT=./logs \
+ -e JAVA_OPTS='-XX:+UseParallelOldGC' \
+ -p 8080:8080 \
+ --name $APP_NAME \
+ harbor.dfocus.co/library/$APP_NAME:$TAG
