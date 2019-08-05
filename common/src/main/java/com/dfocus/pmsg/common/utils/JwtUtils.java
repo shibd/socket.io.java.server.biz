@@ -52,7 +52,7 @@ public class JwtUtils {
 		String userId = (String) map.get("userId");
 		String account = (String) map.get("account");
 		Map<String, Object> mapHeader = new HashMap<>(2);
-		mapHeader.put("alg", "HS256");
+		mapHeader.put("alg", "RSA256");
 		mapHeader.put("typ", "JWT");
 		long iat = System.currentTimeMillis();
 		long exp = iat + expiredTime * 1000L;
@@ -70,7 +70,7 @@ public class JwtUtils {
 	}
 
 	/**
-	 * 公钥解密-鉴权
+	 * 公钥解密-校验
 	 * @param token
 	 * @return
 	 */
@@ -83,17 +83,15 @@ public class JwtUtils {
 			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 			PublicKey publicKey = keyFactory.generatePublic(keySpec);
 
+			// 校验
 			JWTVerifier verifier = JWT.require(Algorithm.RSA256((RSAKey) publicKey)).build();
 			jwt = verifier.verify(token);
-			Map<String, Claim> claims = jwt.getClaims();
-			System.out.println("====用户名====" + claims.get("userName").asString());
 			return jwt.getClaims();
 		}
 		catch (Exception ex) {
 			logger.error("verify jwt token failed, token={}", token, ex);
 			return null;
 		}
-
 	}
 
 }

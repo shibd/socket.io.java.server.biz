@@ -20,7 +20,7 @@ public class JwtUtilsTest {
 	@Test
 	public void testToken() {
 		Map<String, Object> map = new HashMap<>();
-		map.put("userName", "baozi");
+		map.put("userName", "wudixiaobaozi");
 		try {
 			// 加密
 			String token = JwtUtils.getToken(map);

@@ -1,5 +1,6 @@
 package com.dfocus.pmsg.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -23,6 +24,7 @@ import java.util.Map;
  * @description: 开启使用STOMP协议来传输基于代理（message broker）的消息 启用后控制器支持@MessgeMapping注解.
  * 继承AbstractWebSocketMessageBrokerConfigurer 的配置类实现 WebSocket 配置
  */
+@Slf4j
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
@@ -118,7 +120,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	 * @param token
 	 */
 	private Principal authenticate(String token) {
-		// TODO 实现用户的认证并返回用户信息，如果认证失败返回 null
 		// 用户信息需继承 Principal 并实现 getName() 方法，返回全局唯一值
 		if (users.contains(token)) {
 			return new User(token);
@@ -127,11 +128,19 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	}
 
 	// /**
-	// * 配置客户端入站通道拦截器
+	// * 根据token认证授权
+	// * @param token
 	// */
-	// @Override
-	// public void configureClientInboundChannel(ChannelRegistration registration) {
-	// registration.interceptors(new UserInterceptor());
+	// private Principal authenticate(String token) {
+	//
+	// Map<String, Claim> payLoad = JwtUtils.verify(token);
+	// if (payLoad == null) {
+	// return null;
+	// }
+	// // 用户信息需继承 Principal 并实现 getName() 方法，返回全局唯一值
+	// String userName = payLoad.get("userName").asString();
+	// log.info("userName connect success:{}", userName);
+	// return new User(userName);
 	// }
 
 }
