@@ -1,6 +1,10 @@
 package com.dfocus.pmsg.config;
 
+import com.auth0.jwt.interfaces.Claim;
+import com.dfocus.pmsg.common.utils.JwtUtils;
+import com.dfocus.pmsg.service.atom.IProjectKeyService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -14,8 +18,6 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 import java.security.Principal;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,6 +30,9 @@ import java.util.Map;
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+	@Autowired
+	private IProjectKeyService projectKeyService;
 
 	/**
 	 * 注册STOMP协议节点并映射url
@@ -59,12 +64,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 			 */
 			@Override
 			public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
-					WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
+					WebSocketHandler wsHandler, Map<String, Object> attributes) {
 				ServletServerHttpRequest req = (ServletServerHttpRequest) request;
 
 				// 根据token认证用户，不通过返回拒绝握手
 				String token = req.getServletRequest().getParameter("token");
-				Principal user = authenticate(token);
+				String projectId = req.getServletRequest().getParameter("projectId");
+				Principal user = authenticate(projectId, token);
 				if (user == null) {
 					return false;
 				}
@@ -113,34 +119,20 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 		registry.setApplicationDestinationPrefixes("/app");
 	}
 
-	private List<String> users = Arrays.asList("wudixiaobaozi", "baozi");
-
 	/**
-	 * 根据token认证授权
+	 * 根据jwt认证授权
 	 * @param token
 	 */
-	private Principal authenticate(String token) {
-		// 用户信息需继承 Principal 并实现 getName() 方法，返回全局唯一值
-		if (users.contains(token)) {
-			return new User(token);
+	private Principal authenticate(String projectId, String token) {
+		String publicKey = projectKeyService.getPublicKey(projectId);
+		Map<String, Claim> payLoad = JwtUtils.verify(publicKey, token);
+		if (payLoad == null) {
+			return null;
 		}
-		return null;
+		// 用户信息需继承 Principal 并实现 getName() 方法，返回全局唯一值
+		String userName = payLoad.get("userName").asString();
+		log.info("userName connect success, projectId:{}, userName:{}", projectId, userName);
+		return new User(userName);
 	}
-
-	// /**
-	// * 根据token认证授权
-	// * @param token
-	// */
-	// private Principal authenticate(String token) {
-	//
-	// Map<String, Claim> payLoad = JwtUtils.verify(token);
-	// if (payLoad == null) {
-	// return null;
-	// }
-	// // 用户信息需继承 Principal 并实现 getName() 方法，返回全局唯一值
-	// String userName = payLoad.get("userName").asString();
-	// log.info("userName connect success:{}", userName);
-	// return new User(userName);
-	// }
 
 }

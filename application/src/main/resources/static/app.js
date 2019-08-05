@@ -17,7 +17,7 @@ function connect() {
     var project = $("#project").val();
     var group = $("#group").val();
 
-    var socket = new SockJS('/msg-center/websocket?token=' + token);
+    var socket = new SockJS('/msg-center/websocket?token=' + token + '&projectId=' + project);
 
     stompClient = Stomp.over(socket);
 
@@ -33,7 +33,7 @@ function connect() {
         });
 
         // 订阅单用户消息
-        stompClient.subscribe('/user/topic/' + project + '/', function (greeting) {
+        stompClient.subscribe('/user/queue/' + project + '/', function (greeting) {
             showGreeting('UserMessage: ' + JSON.parse(greeting.body).content);
         });
 
