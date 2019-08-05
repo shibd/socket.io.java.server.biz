@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
- * @Auther: baozi
+ * @author baozi
  * @Date: 2019/6/23 17:28
  * @Description:
  */

@@ -1,7 +1,7 @@
 package com.dfocus.pmsg.config;
 
 import com.auth0.jwt.interfaces.Claim;
-import com.dfocus.pmsg.common.utils.JwtUtils;
+import com.dfocus.pmsg.common.utils.JwtRsaUtils;
 import com.dfocus.pmsg.service.atom.IProjectKeyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,7 +125,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	 */
 	private Principal authenticate(String projectId, String token) {
 		String publicKey = projectKeyService.getPublicKey(projectId);
-		Map<String, Claim> payLoad = JwtUtils.verify(publicKey, token);
+		Map<String, Claim> payLoad = JwtRsaUtils.verify(publicKey, token);
 		if (payLoad == null) {
 			return null;
 		}

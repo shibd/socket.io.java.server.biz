@@ -1,9 +1,7 @@
 package com.dfocus.pmsg.utils;
 
-import com.auth0.jwt.exceptions.InvalidClaimException;
-import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.interfaces.Claim;
-import com.dfocus.pmsg.common.utils.JwtUtils;
+import com.dfocus.pmsg.common.utils.JwtRsaUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -15,7 +13,7 @@ import java.util.Map;
  * @date: 2019/8/5 15:02
  * @description:
  */
-public class JwtUtilsTest {
+public class JwtRsaUtilsTest {
 
 	/**
 	 * 秘钥 dm
@@ -37,29 +35,48 @@ public class JwtUtilsTest {
 	 */
 	private static String RSA_PUBLIC_KEY_FM = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDVpgJ8BKV0ZDTHcNNH0bDkUDRqxW3wdHFezJ6SO6YukA0iEHrGAGWbuDUFUCWVW4dAnTFcfvjJiavzqhHIBA3uNDEwe33yxXiFdrFG5t3MpdBoqkKeVPokgrVwahhyY96bVaXRc3RYOizSxJ62LmBnSnmkbgQk9D2O+yMkljjkqwIDAQAB";
 
+	/**
+	 * 到期时间
+	 */
+	private static long expiredTime = 60 * 60 * 24 * 30;
+
 	@Test
 	public void testToken() {
 		Map<String, Object> map = new HashMap<>();
 		map.put("userName", "shuaige");
 		try {
 			// 加密
-			String token = JwtUtils.getToken(RSA_PRIVATE_KEY_FM, map);
+			String token = JwtRsaUtils.genToken(RSA_PRIVATE_KEY_FM, map, expiredTime);
 			System.out.println(token);
 			Thread.sleep(1000);
 
 			// 解密
-			Map<String, Claim> verify = JwtUtils.verify(RSA_PUBLIC_KEY_FM, token);
+			Map<String, Claim> verify = JwtRsaUtils.verify(RSA_PUBLIC_KEY_FM, token);
 
 			// 断言
 			String userName = verify.get("userName").asString();
 			System.out.println(verify.get("userName").asString());
 			Assert.assertTrue(userName.equals("shuaige"));
 		}
-		catch (InvalidClaimException e) {
-			System.out.println("InvalidClaimException");
+		catch (Exception e) {
+			e.printStackTrace();
 		}
-		catch (SignatureVerificationException e) {
-			System.out.println("SignatureVerificationException");
+	}
+
+	@Test
+	public void testVerify() {
+		try {
+			// 加密
+			String token = "eyJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJmMGU5YzM5NC01NTMyLTRlNTktYjExNS1jMTFlZmM3MmQzZTgiLCJpc3MiOiJkZiIsImlhdCI6MTU2NTAwMTc0OCwic3ViIjoiMTAwIiwidHlwIjoiQmVhcmVyIiwidXR5IjoiMCIsInRpZCI6IjEyMCIsImlzYSI6IjAiLCJsbmEiOiJ6aGFuZ1NhbiIsInVuYSI6IuW8oOS4iSJ9.BidPTyiqoinDymseyhdPKjCaUGfJDTGLFMO0c0muuf54xCcxnbGHohR85bUaV8zt1ImFPoVvoYVljdzWC3G8ARvE5MNrRAs9xbrPw1tFZqz0ZSH4L0SjZtQ99aiTLF3w8rbRTj61hP2oJTW_spyxRNclc77uy4ne2nrFcwulZE41uSYlb7xv8tugY-cGNMVlYxDIXjEN_SPU4hhi--sZKfFOIKQHdRAgTsLgLs1kOvCduIHsvwdPfMCzDXNV1e29aB-7skUGEr1Ph3_RucgoEWIfj80j_5lvm-wBd6Hht8CUNR2mwJIEDsI_kuteY9GV-24Wt6tSjmVeYmzfrnB1ug";
+			String publicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3YOdg+9Oor0ogq5WzW6cGdhVWYEYSWOtAmW1FiAgXCHrs1B2+F0TI/3RWud6Zbs5Nkg+BShHYm7PE/6564qV9xQJKQks7DOkDDqvXge+TnUGJkBTmTzD/qBzdKHpm2xmmCiY7lYaaXEQa3qQRGbpsiLpD5zZ8EZhivPP8gTe0eOzHC+/3yS8g562eG1odpr3hV09kh01fTft5+fewVi1MAwWB9jwYOTh6AgGVBuxDjPQSTxiXV49wsHpD8Q0BuOjbyXfGjMFVdBrpHmsuoDlbl5wVQls/G8JVZv3GRZAk9IuonmFiZKIb9xqb4QxuMDcQH0d2qev45yNmkJev1Vn3QIDAQAB";
+			// 解密
+			Map<String, Claim> verify = JwtRsaUtils.verify(publicKey, token);
+			System.out.println(verify.keySet());
+
+			// 断言
+			// String userName = verify.get("userName").asString();
+			// System.out.println(verify.get("userName").asString());
+			// Assert.assertTrue(userName.equals("shuaige"));
 		}
 		catch (Exception e) {
 			e.printStackTrace();

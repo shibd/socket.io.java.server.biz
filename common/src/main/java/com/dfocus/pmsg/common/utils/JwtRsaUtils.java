@@ -6,8 +6,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import sun.misc.BASE64Decoder;
 
 import java.security.KeyFactory;
@@ -21,24 +20,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Author: qfwang Date: 2018-03-15 下午2:19
+ * @author baozi
+ * @Date: 2019/8/5 10:28
+ * @Description:
  */
-public class JwtUtils {
-
-	private final static Logger logger = LoggerFactory.getLogger(JwtUtils.class);
-
-	/**
-	 * 到期时间一个月
-	 */
-	private static long expiredTime = 60 * 60 * 24 * 30;
+@Slf4j
+public class JwtRsaUtils {
 
 	/**
 	 * 私钥加密-生成token
-	 * @param map
+	 * @param privateKeyStr 秘钥
+	 * @param map 自定义属性
+	 * @param expiredTime 过期时间ms
 	 * @return
 	 * @throws Exception
 	 */
-	public static String getToken(String privateKeyStr, Map<String, Object> map) throws Exception {
+	public static String genToken(String privateKeyStr, Map<String, Object> map, long expiredTime) throws Exception {
 
 		// 生成签名私钥
 		byte[] keyBytes = (new BASE64Decoder()).decodeBuffer(privateKeyStr);
@@ -60,9 +57,10 @@ public class JwtUtils {
 	}
 
 	/**
-	 * 公钥解密-校验
+	 * 秘钥/公钥解密-校验
+	 * @param publicKeyStr 公钥or秘钥
 	 * @param token
-	 * @return
+	 * @return null: 校验失败
 	 */
 	public static Map<String, Claim> verify(String publicKeyStr, String token) {
 		DecodedJWT jwt;
@@ -79,7 +77,7 @@ public class JwtUtils {
 			return jwt.getClaims();
 		}
 		catch (Exception ex) {
-			logger.error("verify jwt token failed, token={}", token, ex);
+			log.error("verify jwt token failed, token={}", token, ex);
 			return null;
 		}
 	}
