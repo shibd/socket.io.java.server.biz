@@ -13,18 +13,37 @@ function setConnected(connected) {
 }
 
 function connect() {
-    var socket = new SockJS('/msg-center/guide-websocket');
+    var token = $("#token").val();
+    var project = $("#project").val();
+    var group = $("#group").val();
+
+    var socket = new SockJS('/msg-center/websocket?token=' + token);
+
     stompClient = Stomp.over(socket);
+
     stompClient.connect({
-        userId: 'baozi' // 携带key
+        userId: 'xxx' // 该参数的作用是?
     }, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/greetings', function (greeting) {
+
+        // 订阅广播消息
+        stompClient.subscribe('/topic/' + project + '/' + group + '/', function (greeting) {
             showGreeting(JSON.parse(greeting.body).content);
         });
+
+        // 订阅单用户消息
+        stompClient.subscribe('/user/topic/' + project + '/', function (greeting) {
+            showGreeting('UserMessage: ' + JSON.parse(greeting.body).content);
+        });
+
+    }, function (res) {
+        // 错误取消重试
+        console.log(res)
+        stompClient.abort()
     });
 }
+
 
 function disconnect() {
     if (stompClient !== null) {
@@ -34,9 +53,9 @@ function disconnect() {
     console.log("Disconnected");
 }
 
-function sendName() {
-    stompClient.send("/app/hello", {}, JSON.stringify({'name': $("#name").val()}));
-}
+// function sendName() {
+//     stompClient.send("/app/hello", {}, JSON.stringify({'name': $("#name").val()}));
+// }
 
 function showGreeting(message) {
     $("#greetings").append("<tr><td>" + message + "</td></tr>");
