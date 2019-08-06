@@ -14,6 +14,7 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
@@ -34,6 +35,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Autowired
 	private IProjectKeyService projectKeyService;
 
+	@Override
+	public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
+		WebSocketMessageBrokerConfigurer.super.configureWebSocketTransport(registry);
+	}
+
 	/**
 	 * 注册STOMP协议节点并映射url
 	 * @param registry
@@ -42,7 +48,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		registry
 				// 注册一个 /websocket 的 websocket 节点
-				.addEndpoint("/websocket")
+				.addEndpoint("/websocket").addInterceptors()
 				// 添加 websocket握手拦截器
 				.addInterceptors(myHandshakeInterceptor())
 				// 添加 websocket握手处理器
@@ -67,6 +73,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 					WebSocketHandler wsHandler, Map<String, Object> attributes) {
 				ServletServerHttpRequest req = (ServletServerHttpRequest) request;
 
+				System.out.println(request.getURI().toString());
+				System.out.println(request.getRemoteAddress());
+
 				// 根据token认证用户，不通过返回拒绝握手
 				String token = req.getServletRequest().getParameter("token");
 				String projectId = req.getServletRequest().getParameter("projectId");
@@ -74,15 +83,18 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 				if (user == null) {
 					return false;
 				}
+
 				// 保存认证用户
 				attributes.put("user", user);
+				attributes.put("remoteUrl", request.getRemoteAddress());
+
 				return true;
 			}
 
 			@Override
 			public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
 					WebSocketHandler wsHandler, Exception exception) {
-
+				log.info("这是握手后了");
 			}
 		};
 	}
