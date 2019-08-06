@@ -1,4 +1,4 @@
-package com.dfocus.pmsg.vo.mint;
+package com.dfocus.pmsg.vo;
 
 import lombok.Data;
 

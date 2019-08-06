@@ -2,7 +2,7 @@ package com.dfocus.pmsg.controller;
 
 import com.dfocus.mint.web.rsp.Response;
 import com.dfocus.pmsg.service.atom.ISessionService;
-import com.dfocus.pmsg.vo.mint.WebSocketUserSessionVo;
+import com.dfocus.pmsg.vo.WebSocketUserSessionVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
