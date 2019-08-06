@@ -9,8 +9,25 @@ import java.util.Map;
  */
 public interface IProjectKeyService {
 
-	String getPublicKey(String projectId);
+	/**
+	 * @param projectId
+	 * @return
+	 *
+	 */
+	String selectPublicKeyByProjectId(String projectId);
 
-	Map<String, String> getPublicKeys();
+	/**
+	 * @return
+	 *
+	 */
+	Map<String, String> selectPublicKeys();
+
+	/**
+	 * @param projectId
+	 * @param publicKey
+	 * @return
+	 *
+	 */
+	boolean saveOrUpdatePublicKey(String projectId, String publicKey);
 
 }

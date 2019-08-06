@@ -1,5 +1,7 @@
 package com.dfocus.pmsg.config;
 
+import lombok.ToString;
+
 import java.security.Principal;
 
 /**
@@ -7,6 +9,7 @@ import java.security.Principal;
  * @date: 2019/8/5 10:44
  * @description:
  */
+@ToString
 class User implements Principal {
 
 	private final String name;

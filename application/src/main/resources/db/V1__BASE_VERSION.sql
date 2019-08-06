@@ -10,3 +10,17 @@ create table mint
   nick_name varchar(64) null
   comment '昵称'
 );
+
+-- auto-generated definition
+create table secret
+(
+  project_id varchar(64) not null
+  comment '项目ID'
+    primary key,
+  public_key text        null
+  comment '公钥'
+);
+
+
+
+

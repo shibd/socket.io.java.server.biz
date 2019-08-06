@@ -73,9 +73,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 					WebSocketHandler wsHandler, Map<String, Object> attributes) {
 				ServletServerHttpRequest req = (ServletServerHttpRequest) request;
 
-				System.out.println(request.getURI().toString());
-				System.out.println(request.getRemoteAddress());
-
 				// 根据token认证用户，不通过返回拒绝握手
 				String token = req.getServletRequest().getParameter("token");
 				String projectId = req.getServletRequest().getParameter("projectId");
@@ -94,7 +91,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 			@Override
 			public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
 					WebSocketHandler wsHandler, Exception exception) {
-				log.info("这是握手后了");
 			}
 		};
 	}
@@ -136,7 +132,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	 * @param token
 	 */
 	private Principal authenticate(String projectId, String token) {
-		String publicKey = projectKeyService.getPublicKey(projectId);
+		String publicKey = projectKeyService.selectPublicKeyByProjectId(projectId);
 		Map<String, Claim> payLoad = JwtRsaUtils.verify(publicKey, token);
 		if (payLoad == null) {
 			return null;

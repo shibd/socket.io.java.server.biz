@@ -22,6 +22,8 @@ public class WebSocketUserSessionVo {
 
 		String sessionId;
 
+		String remoteUrl;
+
 		List<String> subscriptions = new ArrayList<>();
 
 		public void addSubscription(String subscription) {

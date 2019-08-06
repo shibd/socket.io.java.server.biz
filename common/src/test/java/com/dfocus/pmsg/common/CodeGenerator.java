@@ -24,7 +24,7 @@ import java.util.Map;
 public class CodeGenerator {
 
 	// 生成文件所在项目路径,如果使用mybatisd-generator脚本不设置
-	private static String baseProjectPath = "";
+	private static String baseProjectPath = "/Users/baozi/workspace/dfocus/msg-center";
 
 	// 基本包名
 	private static String basePackage = "com.dfocus.pmsg.common";
@@ -33,19 +33,19 @@ public class CodeGenerator {
 	private static String authorName = "baozi";
 
 	// 要生成的表名
-	private static String[] tables = { "mint" };
+	private static String[] tables = { "secret" };
 
 	// table前缀
-	private static String prefix = "x_";
+	private static String prefix = "xx_";
 
 	// 数据库配置四要素
 	private static String driverName = "com.mysql.cj.jdbc.Driver";
 
-	private static String url = "jdbc:mysql://localhost:3306/mint-test?useUnicode=true&characterEncoding=utf8";
+	private static String url = "jdbc:mysql://139.217.225.220:3306/seata_test?useUnicode=true&characterEncoding=utf8";
 
 	private static String username = "root";
 
-	private static String password = "";
+	private static String password = "dfocus@dm";
 
 	public static void main(String[] args) {
 		if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
@@ -79,7 +79,7 @@ public class CodeGenerator {
 		 * 全局配置
 		 */
 		gen.setGlobalConfig(new GlobalConfig().setOutputDir(baseProjectPath + "/src/main/java")// 输出目录
-				.setFileOverride(false)// 是否覆盖文件
+				.setFileOverride(true)// 是否覆盖文件
 				.setActiveRecord(true)// 开启 activeRecord 模式
 				.setEnableCache(false)// XML 二级缓存
 				.setBaseResultMap(true)// XML ResultMap

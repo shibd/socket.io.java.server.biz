@@ -1,10 +1,16 @@
 package com.dfocus.pmsg.service.atom.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.dfocus.pmsg.common.dao.SecretMapper;
+import com.dfocus.pmsg.common.entity.Secret;
 import com.dfocus.pmsg.service.atom.IProjectKeyService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @auther: baozi
@@ -14,26 +20,33 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class ProjectKeyServiceImpl implements IProjectKeyService {
 
-	/**
-	 * key: projectId, value: publicKey
-	 */
-	private static Map<String, String> publicKeys = new ConcurrentHashMap<>();
+	@Autowired
+	private SecretMapper secretMapper;
 
-	static {
-		publicKeys.put("dm",
-				"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDQ60Tn13Gw3jAeNAGvl/yZEarko9oV33jAG5IgK86GzBJKsA23Ru+v2LUkcejXpu/cqsIVDajYPpSnzETKaxEQ5v/v3l9U792Axc6V2WstJneYWcVECjalg6Gwne1PLcCkQ3yMNQXyAbT4nS90Spjl5SbnaGvink4SEUJU9gx6xQIDAQAB");
-		publicKeys.put("fm",
-				"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDVpgJ8BKV0ZDTHcNNH0bDkUDRqxW3wdHFezJ6SO6YukA0iEHrGAGWbuDUFUCWVW4dAnTFcfvjJiavzqhHIBA3uNDEwe33yxXiFdrFG5t3MpdBoqkKeVPokgrVwahhyY96bVaXRc3RYOizSxJ62LmBnSnmkbgQk9D2O+yMkljjkqwIDAQAB");
+	@Override
+	public String selectPublicKeyByProjectId(String projectId) {
+		LambdaQueryWrapper<Secret> wrapper = Wrappers.lambdaQuery();
+		wrapper.eq(Secret::getProjectId, projectId);
+		Secret secret = secretMapper.selectOne(wrapper);
+		return secret == null ? "" : secret.getPublicKey();
 	}
 
 	@Override
-	public String getPublicKey(String projectId) {
-		return publicKeys.get(projectId);
+	public Map<String, String> selectPublicKeys() {
+		List<Secret> secrets = secretMapper.selectList(Wrappers.emptyWrapper());
+		Map<String, String> map = new HashMap<>();
+		for (Secret secret : secrets) {
+			map.put(secret.getProjectId(), secret.getPublicKey());
+		}
+		return map;
 	}
 
 	@Override
-	public Map<String, String> getPublicKeys() {
-		return publicKeys;
+	public boolean saveOrUpdatePublicKey(String projectId, String publicKey) {
+		Secret secret = new Secret();
+		secret.setProjectId(projectId);
+		secret.setPublicKey(publicKey);
+		return secret.insertOrUpdate();
 	}
 
 }

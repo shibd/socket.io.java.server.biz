@@ -26,7 +26,7 @@ public class ProjectKeyController {
 	@ApiOperation("接口: 获取公钥")
 	@RequestMapping(method = RequestMethod.GET, value = "/public_keys")
 	Response<Map<String, String>> getPublicKeys() {
-		return Response.success(projectKeyService.getPublicKeys());
+		return Response.success(projectKeyService.selectPublicKeys());
 	}
 
 }

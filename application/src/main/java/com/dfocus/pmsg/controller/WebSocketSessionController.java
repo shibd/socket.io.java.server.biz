@@ -1,6 +1,7 @@
 package com.dfocus.pmsg.controller;
 
 import com.dfocus.mint.web.rsp.Response;
+import com.dfocus.pmsg.service.atom.ISessionService;
 import com.dfocus.pmsg.vo.mint.WebSocketUserSessionVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +30,9 @@ public class WebSocketSessionController {
 	@Autowired
 	SimpUserRegistry userRegistry;
 
+	@Autowired
+	ISessionService iSessionService;
+
 	@ApiOperation("接口: 获取会话列表")
 	@RequestMapping(method = RequestMethod.GET, value = "/sessions")
 	Response<Object> getSessions() {
@@ -45,6 +49,7 @@ public class WebSocketSessionController {
 			for (SimpSession simpSession : user.getSessions()) {
 				WebSocketUserSessionVo.WebSocketSessionVo webSocketSessionVo = new WebSocketUserSessionVo.WebSocketSessionVo();
 				webSocketSessionVo.setSessionId(simpSession.getId());
+				webSocketSessionVo.setRemoteUrl(iSessionService.getRemoteUrlBySession(simpSession.getId()));
 				for (SimpSubscription simpSubscription : simpSession.getSubscriptions()) {
 					webSocketSessionVo.addSubscription(simpSubscription.getDestination());
 				}
@@ -55,6 +60,12 @@ public class WebSocketSessionController {
 		}
 
 		return Response.success(webSocketUserSessionVos);
+	}
+
+	@ApiOperation("接口: 获取自己维护的session")
+	@RequestMapping(method = RequestMethod.GET, value = "/my_sessions")
+	Response<Object> getMySessions() {
+		return Response.success(iSessionService.getSessions());
 	}
 
 }
