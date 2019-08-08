@@ -15,7 +15,7 @@ function setConnected(connected) {
 function connect() {
     var token = $("#token").val();
     var project = $("#project").val();
-    var group = $("#group").val();
+    var topic = $("#topic").val();
 
     var socket = new SockJS('/msg-center/websocket?token=' + token + '&projectId=' + project);
 
@@ -28,7 +28,7 @@ function connect() {
         console.log('Connected: ' + frame);
 
         // 订阅广播消息
-        stompClient.subscribe('/topic/' + project + '/' + group + '/', function (greeting) {
+        stompClient.subscribe('/topic/' + project + '/' + topic, function (greeting) {
             showGreeting(JSON.parse(greeting.body).content);
         });
 

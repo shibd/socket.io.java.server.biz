@@ -57,7 +57,7 @@ public abstract class WsMessage {
 		/**
 		 * 主题
 		 */
-		@ApiModelProperty(value = "订阅主题", example = "all")
+		@ApiModelProperty(value = "订阅主题", example = "all/group1/")
 		private String topic;
 
 		public WsTopicMessage(String projectId, String topic, String playLoad) {

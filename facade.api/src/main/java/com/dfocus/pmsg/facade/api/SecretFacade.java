@@ -16,6 +16,7 @@ public interface SecretFacade {
 
 	/**
 	 * 查询项目公钥
+	 * @param projectId
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{projectId}")
@@ -23,6 +24,8 @@ public interface SecretFacade {
 
 	/**
 	 * 新增或更新公钥
+	 * @param projectId
+	 * @param publicKey
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.PUT, value = "/save/{projectId}")

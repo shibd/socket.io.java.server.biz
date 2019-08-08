@@ -23,7 +23,7 @@ public interface WsMessageFacade {
 	Response<Boolean> sendMessage(@RequestBody WsMessage.WsTopicMessage message);
 
 	/**
-	 * 发送
+	 * 发送用户消息
 	 * @param message
 	 * @return
 	 */
