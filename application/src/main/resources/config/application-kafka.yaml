@@ -16,5 +16,8 @@ spring.kafka:
     value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
     auto-offset-reset: earliest
 xxx:
-  group: msg-center
-  topic: msg-center
+  group: xxx-msg-center
+  topic: xxx-msg-center
+ws:
+  group: ws-msg-center
+  topic: ws-msg-center

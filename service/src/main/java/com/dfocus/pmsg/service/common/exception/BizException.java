@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.ToString;
 
 /**
- * @Auther:
+ * @Author:
  * @Date: 2019/6/27 10:14
  * @Description: 业务异常
  */

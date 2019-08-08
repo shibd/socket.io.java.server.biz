@@ -17,8 +17,11 @@ kafka.enable: false
 spring.kafka:
   bootstrap-servers: ${spring.embedded.kafka.brokers}
 xxx:
-  group: msg-center
-  topic: msg-center
+  group: xxx-msg-center
+  topic: xxx-msg-center
+ws:
+  group: ws-msg-center
+  topic: ws-msg-center
 
 # eureka
 eureka:

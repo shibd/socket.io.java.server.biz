@@ -3,6 +3,7 @@ package com.dfocus.pmsg.service;
 import com.dfocus.pmsg.MsgcenterApplicationTests;
 import com.dfocus.pmsg.service.kafka.XXXReceiver;
 import com.dfocus.pmsg.service.kafka.XXXSender;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.test.context.EmbeddedKafka;
@@ -11,10 +12,8 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Assert;
-
 /**
- * @Auther: baozi
+ * @Author: baozi
  * @Date: 2019/7/9 17:24
  * @Description:
  */
@@ -38,7 +37,6 @@ public class XXXKafkaTest extends MsgcenterApplicationTests {
 	}
 
 	/**
-	 * 建议这种测试
 	 * @throws Exception
 	 */
 	@Test

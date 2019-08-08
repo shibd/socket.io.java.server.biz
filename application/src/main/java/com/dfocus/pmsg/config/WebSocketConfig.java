@@ -2,7 +2,8 @@ package com.dfocus.pmsg.config;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.dfocus.pmsg.common.utils.JwtRsaUtils;
-import com.dfocus.pmsg.service.atom.IProjectKeyService;
+import com.dfocus.pmsg.service.atom.ISecretService;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +34,7 @@ import java.util.Map;
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Autowired
-	private IProjectKeyService projectKeyService;
+	private ISecretService projectKeyService;
 
 	@Override
 	public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
@@ -141,6 +142,27 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 		String userName = payLoad.get("userName").asString();
 		log.info("userName connect success, projectId:{}, userName:{}", projectId, userName);
 		return new User(userName);
+	}
+
+	/**
+	 * @auther: baozi
+	 * @date: 2019/8/5 10:44
+	 * @description:
+	 */
+	@ToString
+	static class User implements Principal {
+
+		private final String name;
+
+		public User(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public String getName() {
+			return name;
+		}
+
 	}
 
 }

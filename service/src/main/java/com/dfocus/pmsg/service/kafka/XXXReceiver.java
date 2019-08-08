@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * @Auther: baozi
+ * @Author: baozi
  * @Date: 2019/7/9 17:01
  * @Description:
  */

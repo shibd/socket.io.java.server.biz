@@ -19,22 +19,21 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class Secret extends Model<Secret> {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * 项目ID
-     */
-    private String projectId;
+	/**
+	 * 项目ID
+	 */
+	private String projectId;
 
-    /**
-     * 公钥
-     */
-    private String publicKey;
+	/**
+	 * 公钥
+	 */
+	private String publicKey;
 
-
-    @Override
-    protected Serializable pkVal() {
-        return this.projectId;
-    }
+	@Override
+	protected Serializable pkVal() {
+		return this.projectId;
+	}
 
 }

@@ -7,7 +7,7 @@ import java.util.Map;
  * @date: 2019/8/5 17:33
  * @description:
  */
-public interface IProjectKeyService {
+public interface ISecretService {
 
 	/**
 	 * @param projectId

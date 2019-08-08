@@ -17,6 +17,10 @@
             <groupId>com.dfocus.pmsg</groupId>
             <artifactId>msg-center.manager</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.dfocus.pmsg</groupId>
+            <artifactId>msg-center.facade.api</artifactId>
+        </dependency>
     </dependencies>
 
 

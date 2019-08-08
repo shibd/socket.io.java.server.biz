@@ -46,7 +46,7 @@ public class WebSocketEventListener {
 
 		Map<String, Object> sessionAttributes = headerAccessor.getSessionAttributes();
 		String remoteUrl = sessionAttributes.get("remoteUrl").toString();
-		String user = ((User) sessionAttributes.get("user")).getName();
+		String user = ((WebSocketConfig.User) sessionAttributes.get("user")).getName();
 		logger.info("User Disconnected,{}:{}", user, remoteUrl);
 		sessionService.deleteSession(headerAccessor.getSessionId());
 	}

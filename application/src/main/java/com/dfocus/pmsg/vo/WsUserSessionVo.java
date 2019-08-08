@@ -11,14 +11,14 @@ import java.util.List;
  * @description:
  */
 @Data
-public class WebSocketUserSessionVo {
+public class WsUserSessionVo {
 
 	private String userId;
 
-	private List<WebSocketUserSessionVo.WebSocketSessionVo> sessions;
+	private List<WsSessionVo> sessions;
 
 	@Data
-	public static class WebSocketSessionVo {
+	public static class WsSessionVo {
 
 		String sessionId;
 

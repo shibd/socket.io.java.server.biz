@@ -7,7 +7,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 /**
- * @Auther: baozi
+ * @Author: baozi
  * @Date: 2019/7/9 18:27
  * @Description:
  */

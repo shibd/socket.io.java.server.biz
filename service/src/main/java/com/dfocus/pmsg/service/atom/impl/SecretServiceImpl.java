@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dfocus.pmsg.common.dao.SecretMapper;
 import com.dfocus.pmsg.common.entity.Secret;
-import com.dfocus.pmsg.service.atom.IProjectKeyService;
+import com.dfocus.pmsg.service.atom.ISecretService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @auther: baozi
+ * @author: baozi
  * @date: 2019/8/5 17:34
  * @description:
  */
 @Service
-public class ProjectKeyServiceImpl implements IProjectKeyService {
+public class SecretServiceImpl implements ISecretService {
 
 	@Autowired
 	private SecretMapper secretMapper;
