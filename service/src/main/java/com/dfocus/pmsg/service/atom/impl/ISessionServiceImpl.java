@@ -1,9 +1,12 @@
 package com.dfocus.pmsg.service.atom.impl;
 
 import com.dfocus.pmsg.service.atom.ISessionService;
+import com.dfocus.pmsg.service.dto.WsSessionDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,26 +19,26 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class ISessionServiceImpl implements ISessionService {
 
-	private Map<String, String> sessionRemoteUrls = new ConcurrentHashMap<>();
+	private Map<String, WsSessionDto> sessionCache = new ConcurrentHashMap<>();
 
 	@Override
-	public void createSession(String sessionId, String remoteUrl) {
-		sessionRemoteUrls.put(sessionId, remoteUrl);
+	public void createSession(WsSessionDto wsSessionDto) {
+		sessionCache.put(wsSessionDto.getSessionId(), wsSessionDto);
 	}
 
 	@Override
 	public void deleteSession(String sessionId) {
-		sessionRemoteUrls.remove(sessionId);
+		sessionCache.remove(sessionId);
 	}
 
 	@Override
-	public String getRemoteUrlBySession(String sessionId) {
-		return sessionRemoteUrls.get(sessionId);
+	public WsSessionDto getSessionById(String sessionId) {
+		return sessionCache.get(sessionId);
 	}
 
 	@Override
-	public Map<String, String> getSessions() {
-		return sessionRemoteUrls;
+	public List<WsSessionDto> getSessions() {
+		return new ArrayList<>(sessionCache.values());
 	}
 
 }

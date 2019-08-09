@@ -1,6 +1,8 @@
 package com.dfocus.pmsg.service.atom;
 
-import java.util.Map;
+import com.dfocus.pmsg.service.dto.WsSessionDto;
+
+import java.util.List;
 
 /**
  * @author: baozi
@@ -10,25 +12,28 @@ import java.util.Map;
 public interface ISessionService {
 
 	/**
-	 * @param sessionId
-	 * @param remoteUrl
+	 * 创建session
+	 * @param wsSessionDto
 	 */
-	void createSession(String sessionId, String remoteUrl);
+	void createSession(WsSessionDto wsSessionDto);
 
 	/**
+	 * 阐述session
 	 * @param sessionId
 	 */
 	void deleteSession(String sessionId);
 
 	/**
+	 * 查找session
 	 * @param sessionId
 	 * @return
 	 */
-	String getRemoteUrlBySession(String sessionId);
+	WsSessionDto getSessionById(String sessionId);
 
 	/**
+	 * 获取session列表
 	 * @return
 	 */
-	Map<String, String> getSessions();
+	List<WsSessionDto> getSessions();
 
 }

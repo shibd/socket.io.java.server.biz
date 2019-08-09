@@ -2,7 +2,8 @@ package com.dfocus.pmsg.controller;
 
 import com.dfocus.mint.web.rsp.Response;
 import com.dfocus.pmsg.service.atom.ISessionService;
-import com.dfocus.pmsg.vo.WsUserSessionVo;
+import com.dfocus.pmsg.service.dto.WsSessionDto;
+import com.dfocus.pmsg.vo.WsProjectSessionVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author baozi
@@ -37,36 +38,55 @@ public class WsSessionController {
 
 	@ApiOperation("接口: 获取会话列表")
 	@RequestMapping(method = RequestMethod.GET, value = "/list")
-	Response<List<WsUserSessionVo>> getSessions() {
+	Response<List<WsProjectSessionVo>> getSessions() {
 
-		List<WsUserSessionVo> webSocketUserSessionVos = new ArrayList<>();
-		Set<SimpUser> users = userRegistry.getUsers();
-		for (SimpUser user : users) {
-
-			WsUserSessionVo webSocketUserSession = new WsUserSessionVo();
-			List<WsUserSessionVo.WsSessionVo> webSocketSessionVos = new ArrayList<>();
-			webSocketUserSession.setUserId(user.getName());
-			webSocketUserSession.setSessions(webSocketSessionVos);
+		// 预处理 <projectId, <user, userSession>>
+		Map<String, Map<String, WsProjectSessionVo.WsUserSessionVo>> wsProjectSessionMaps = new HashMap<>();
+		for (SimpUser user : userRegistry.getUsers()) {
 
 			for (SimpSession simpSession : user.getSessions()) {
-				WsUserSessionVo.WsSessionVo webSocketSessionVo = new WsUserSessionVo.WsSessionVo();
-				webSocketSessionVo.setSessionId(simpSession.getId());
-				webSocketSessionVo.setRemoteUrl(iSessionService.getRemoteUrlBySession(simpSession.getId()));
-				for (SimpSubscription simpSubscription : simpSession.getSubscriptions()) {
-					webSocketSessionVo.addSubscription(simpSubscription.getDestination());
-				}
-				webSocketSessionVos.add(webSocketSessionVo);
-			}
 
-			webSocketUserSessionVos.add(webSocketUserSession);
+				// session预处理
+				WsSessionDto session = iSessionService.getSessionById(simpSession.getId());
+				WsProjectSessionVo.WsSessionVo wsSessionVo = new WsProjectSessionVo.WsSessionVo();
+				wsSessionVo.setSessionId(simpSession.getId());
+				wsSessionVo.setRemoteUrl(session.getRemoteUrl());
+				for (SimpSubscription simpSubscription : simpSession.getSubscriptions()) {
+					wsSessionVo.addSubscription(simpSubscription.getDestination());
+				}
+
+				// 用户的session预处理
+				Map<String, WsProjectSessionVo.WsUserSessionVo> wsUserSessionVoMap = wsProjectSessionMaps
+						.get(session.getProjectId());
+				if (wsUserSessionVoMap == null) {
+					wsUserSessionVoMap = new HashMap<>();
+					wsProjectSessionMaps.put(session.getProjectId(), wsUserSessionVoMap);
+				}
+				WsProjectSessionVo.WsUserSessionVo wsUserSessionVo = wsUserSessionVoMap.get(user.getName());
+				if (wsUserSessionVo == null) {
+					wsUserSessionVo = new WsProjectSessionVo.WsUserSessionVo();
+					wsUserSessionVoMap.put(user.getName(), wsUserSessionVo);
+				}
+				wsUserSessionVo.setUserId(user.getName());
+				wsUserSessionVo.addWsSession(wsSessionVo);
+			}
 		}
 
-		return Response.success(webSocketUserSessionVos);
+		// 组装
+		List<WsProjectSessionVo> wsProjectSessions = new ArrayList<>();
+		wsProjectSessionMaps.forEach((key, wsUserSession) -> {
+			WsProjectSessionVo wsProjectSessionVo = new WsProjectSessionVo();
+			wsProjectSessionVo.setProjectId(key);
+			wsProjectSessionVo.setWsUserSessionVos(new ArrayList<>(wsUserSession.values()));
+			wsProjectSessions.add(wsProjectSessionVo);
+		});
+
+		return Response.success(wsProjectSessions);
 	}
 
 	@ApiOperation("接口: 获取自己定义的树形")
 	@RequestMapping(method = RequestMethod.GET, value = "/my_define/list")
-	Response<Map<String, String>> getMyDefineSessions() {
+	Response<List<WsSessionDto>> getMyDefineSessions() {
 		return Response.success(iSessionService.getSessions());
 	}
 

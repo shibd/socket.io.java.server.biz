@@ -82,10 +82,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 					return false;
 				}
 
-				// 保存认证用户
+				// 保存会话信息
 				attributes.put("user", user);
 				attributes.put("remoteUrl", request.getRemoteAddress());
-
+				attributes.put("projectId", projectId);
 				return true;
 			}
 

@@ -1,6 +1,7 @@
 package com.dfocus.pmsg.config;
 
 import com.dfocus.pmsg.service.atom.ISessionService;
+import com.dfocus.pmsg.service.dto.WsSessionDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,8 @@ public class WebSocketEventListener {
 
 		String sessionId = headers.get("simpSessionId").toString();
 		String remoteUrl = simpSessionAttributes.get("remoteUrl").toString();
-		sessionService.createSession(sessionId, remoteUrl);
+		String projectId = simpSessionAttributes.get("projectId").toString();
+		sessionService.createSession(new WsSessionDto(sessionId, remoteUrl, projectId));
 	}
 
 	@EventListener
