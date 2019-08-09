@@ -82,5 +82,6 @@
         <module>integration</module>
         <module>manager</module>
         <module>service</module>
+        <module>application.client</module>
     </modules>
 </project>

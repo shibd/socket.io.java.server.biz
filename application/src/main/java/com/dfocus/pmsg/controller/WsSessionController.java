@@ -84,10 +84,16 @@ public class WsSessionController {
 		return Response.success(wsProjectSessions);
 	}
 
-	@ApiOperation("接口: 获取自己定义的树形")
+	@ApiOperation("接口: 获取自己定义的属性")
 	@RequestMapping(method = RequestMethod.GET, value = "/my_define/list")
 	Response<List<WsSessionDto>> getMyDefineSessions() {
 		return Response.success(iSessionService.getSessions());
+	}
+
+	@ApiOperation("接口: 获取所有会话数目")
+	@RequestMapping(method = RequestMethod.GET, value = "/my_define/size")
+	Response<Integer> getSessionNumber() {
+		return Response.success(iSessionService.getSessions().size());
 	}
 
 }
