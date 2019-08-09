@@ -72,7 +72,7 @@ public class WsSessionController {
 			}
 		}
 
-		// 组装
+		// 组装结果
 		List<WsProjectSessionVo> wsProjectSessions = new ArrayList<>();
 		wsProjectSessionMaps.forEach((key, wsUserSession) -> {
 			WsProjectSessionVo wsProjectSessionVo = new WsProjectSessionVo();
