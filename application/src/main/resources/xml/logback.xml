@@ -12,7 +12,7 @@
 
     <!-- 基础配置-->
     <property name="LOG_PATH_ROOT" value="${DFOCUS_LOG_ROOT:-./logs}"/>
-    <property name="LOG_APP_NAME" value="${LOG_APP_NAME:-default-app}"/>
+    <property name="LOG_APP_NAME" value="${LOG_APP_NAME:-msg-center}"/>
     <property name="LOG_PATH" value="${LOG_PATH:-${LOG_PATH_ROOT}/${LOG_APP_NAME}}"/>
 
     <!-- 输出到控制台 -->
