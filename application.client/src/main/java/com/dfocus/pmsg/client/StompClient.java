@@ -14,9 +14,10 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author: baozi
@@ -49,38 +50,44 @@ public class StompClient {
 		stompClient.setMessageConverter(new StringMessageConverter());
 		StompSessionHandler sessionHandler = new MyStompSessionHandler();
 
-		ExecutorService executorService = Executors.newCachedThreadPool();
+		ExecutorService executorService = new ThreadPoolExecutor(200, 1000, 60L, TimeUnit.SECONDS,
+				new LinkedBlockingQueue<>(10000));
 
 		while (clientThreadNum-- > 0) {
 
 			Thread.sleep(1);
 
-			executorService.submit(() -> {
-				int waitTime = 1000;
-				while (true) {
-					try {
-						ListenableFuture<StompSession> connect = stompClient.connect(REQ_URL, sessionHandler);
-						StompSession stompSession = connect.get();
-						if (stompSession != null) {
-							break;
-						}
-					}
-					catch (Exception e) {
-						try {
-							Thread.sleep(waitTime);
-							waitTime += 1000;
-						}
-						catch (InterruptedException e1) {
-							e1.printStackTrace();
-						}
-						e.printStackTrace();
-					}
+			try {
+				executorService.submit(() -> {
+					int waitTime = 1000;
+					// while (true) {
+					// try {
+					ListenableFuture<StompSession> connect = stompClient.connect(REQ_URL, sessionHandler);
+					// StompSession stompSession = connect.get();
+					// if (stompSession != null) {
+					// break;
+					// }
+					// }
+					// catch (Exception e) {
+					// try {
+					// Thread.sleep(waitTime);
+					// waitTime += 1000;
+					// }
+					// catch (InterruptedException e1) {
+					// e1.printStackTrace();
+					// }
+					// e.printStackTrace();
+					// }
 
-				}
-			});
+					// }
+				});
+			}
+			catch (Exception e) {
+				Thread.sleep(5000);
+				clientThreadNum++;
+				e.printStackTrace();
+			}
 		}
-		// Don't close immediately.
-		new Scanner(System.in).nextLine();
 	}
 
 }
