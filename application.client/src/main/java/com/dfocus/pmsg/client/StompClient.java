@@ -23,13 +23,20 @@ public class StompClient {
 
 	private static String TOKEN = "eyJ1c2VyTmFtZSI6Ind1ZGl4aWFvYmFvemkiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE1Njc1OTE1NDYsInVzZXJOYW1lIjoid3VkaXhpYW9iYW96aSIsImlhdCI6MTU2NDk5OTU0Nn0.dEJzjgwwZCL6qh3NtluVSo0uZZZdUEzrNF2pLsUxprVOSE-pzaUVlOw2EmntXd4IpFs3qI0IwA4F51VOFIX65lc1RoX93AFeb44CYt9JpXKcGtGYWQr2D4nsNMaS7je8abtastBC8QIInCYtC7s8tvaAQRzYTvCZmSM8vtgu06g";
 
-	private static String URL = "ws://localhost:8080/msg-center/websocket?token=" + TOKEN + "&projectId=fm";
+	private static String REMOTE_URL = "localhost:8080";
+
+	private static String REQ_URL = "ws://" + REMOTE_URL + "/msg-center/websocket?token=" + TOKEN + "&projectId=fm";
 
 	public static void main(String[] args) {
 
 		long clientThreadNum = 5000;
 		if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
 			clientThreadNum = Long.valueOf(args[0]);
+			System.out.println("客户端建立链接数:" + clientThreadNum);
+		}
+
+		if (args.length > 0 && !StringUtils.isEmpty(args[1])) {
+			REMOTE_URL = args[1];
 			System.out.println("客户端建立链接数:" + clientThreadNum);
 		}
 
@@ -42,9 +49,10 @@ public class StompClient {
 
 		StompSessionHandler sessionHandler = new MyStompSessionHandler();
 		while (clientThreadNum-- > 0) {
-			stompClient.connect(URL, sessionHandler);
+			stompClient.connect(REQ_URL, sessionHandler);
 		}
-		new Scanner(System.in).nextLine(); // Don't close immediately.
+		// Don't close immediately.
+		new Scanner(System.in).nextLine();
 	}
 
 }
