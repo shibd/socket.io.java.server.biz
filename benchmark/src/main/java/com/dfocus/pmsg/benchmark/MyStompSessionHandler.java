@@ -1,4 +1,4 @@
-package com.dfocus.pmsg.client;
+package com.dfocus.pmsg.benchmark;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

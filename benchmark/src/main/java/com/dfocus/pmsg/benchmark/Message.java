@@ -1,4 +1,4 @@
-package com.dfocus.pmsg.client;
+package com.dfocus.pmsg.benchmark;
 
 /**
  * @author: baozi

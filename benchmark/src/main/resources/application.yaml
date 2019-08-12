@@ -1,11 +1,11 @@
 # 基础应用配置
 spring:
-  application.name: msg-center-client
+  application.name: msg-center-benchmark
   output.ansi.enabled: always
   mvc:
     favicon:
       enabled: true
 server:
   port: 8081
-  servlet.context-path: /msg-center-client
+  servlet.context-path: /msg-center-benchmark
 

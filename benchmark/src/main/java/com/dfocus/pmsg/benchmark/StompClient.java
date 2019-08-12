@@ -1,4 +1,4 @@
-package com.dfocus.pmsg.client;
+package com.dfocus.pmsg.benchmark;
 
 import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.simp.stomp.StompSession;
@@ -18,8 +18,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import static com.dfocus.pmsg.client.StompClient.*;
 
 /**
  * @author: baozi
@@ -77,44 +75,44 @@ public class StompClient {
 
 	}
 
-}
+	public static class DealThread implements Runnable {
 
-class DealThread implements Runnable {
+		private long dealNum;
 
-	private long dealNum;
+		public DealThread(long dealNum) {
+			this.dealNum = dealNum;
+		}
 
-	public DealThread(long dealNum) {
-		this.dealNum = dealNum;
-	}
+		@Override
+		public void run() {
+			int waitTime = 1;
+			while (dealNum > 0) {
 
-	@Override
-	public void run() {
-		int waitTime = 1;
-		while (dealNum > 0) {
-
-			try {
-				Thread.sleep(waitTime);
-				ListenableFuture<StompSession> connect = stompClient.connect(REQ_URL, sessionHandler);
-				StompSession stompSession = connect.get();
-				if (stompSession == null) {
+				try {
+					Thread.sleep(waitTime);
+					ListenableFuture<StompSession> connect = stompClient.connect(REQ_URL, sessionHandler);
+					StompSession stompSession = connect.get();
+					if (stompSession == null) {
+						waitTime += 1000;
+						continue;
+					}
+				}
+				catch (Exception e) {
+					e.printStackTrace();
 					waitTime += 1000;
 					continue;
 				}
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-				waitTime += 1000;
-				continue;
+
+				// 走到后面说明连接成功,置回正常等待时间,处理下一位
+				if (waitTime > 1000) {
+					waitTime = 1;
+				}
+				dealNum--;
 			}
 
-			// 走到后面说明连接成功,置回正常等待时间,处理下一位
-			if (waitTime > 1000) {
-				waitTime = 1;
-			}
-			dealNum--;
+			System.out.println(Thread.currentThread().getName() + " is die");
 		}
 
-		System.out.println(Thread.currentThread().getName() + " is die");
 	}
 
 }
