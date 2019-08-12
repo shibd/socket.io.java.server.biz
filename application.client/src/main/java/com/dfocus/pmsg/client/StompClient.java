@@ -47,7 +47,7 @@ public class StompClient {
 
 		StompSessionHandler sessionHandler = new MyStompSessionHandler();
 		while (clientThreadNum-- > 0) {
-			Thread.sleep(100);
+			Thread.sleep(1);
 			stompClient.connect(REQ_URL, sessionHandler);
 		}
 		// Don't close immediately.
