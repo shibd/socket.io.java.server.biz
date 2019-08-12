@@ -19,6 +19,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import static com.dfocus.pmsg.client.StompClient.*;
+
 /**
  * @author: baozi
  * @date: 2019/8/9 14:57
@@ -26,19 +28,23 @@ import java.util.concurrent.TimeUnit;
  */
 public class StompClient {
 
-	private static String TOKEN = "eyJ1c2VyTmFtZSI6Ind1ZGl4aWFvYmFvemkiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE1Njc1OTE1NDYsInVzZXJOYW1lIjoid3VkaXhpYW9iYW96aSIsImlhdCI6MTU2NDk5OTU0Nn0.dEJzjgwwZCL6qh3NtluVSo0uZZZdUEzrNF2pLsUxprVOSE-pzaUVlOw2EmntXd4IpFs3qI0IwA4F51VOFIX65lc1RoX93AFeb44CYt9JpXKcGtGYWQr2D4nsNMaS7je8abtastBC8QIInCYtC7s8tvaAQRzYTvCZmSM8vtgu06g";
+	public static String TOKEN = "eyJ1c2VyTmFtZSI6Ind1ZGl4aWFvYmFvemkiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE1Njc1OTE1NDYsInVzZXJOYW1lIjoid3VkaXhpYW9iYW96aSIsImlhdCI6MTU2NDk5OTU0Nn0.dEJzjgwwZCL6qh3NtluVSo0uZZZdUEzrNF2pLsUxprVOSE-pzaUVlOw2EmntXd4IpFs3qI0IwA4F51VOFIX65lc1RoX93AFeb44CYt9JpXKcGtGYWQr2D4nsNMaS7je8abtastBC8QIInCYtC7s8tvaAQRzYTvCZmSM8vtgu06g";
 
-	private static String REQ_URL = "ws://139.217.99.53:8080/msg-center/websocket?token=" + TOKEN + "&projectId=fm";
+	public static String REQ_URL = "ws://139.217.99.53:8080/msg-center/websocket?token=" + TOKEN + "&projectId=fm";
+
+	public static WebSocketStompClient stompClient;
+
+	public static StompSessionHandler sessionHandler;
 
 	public static void main(String[] args) throws InterruptedException {
 
-		long clientThreadNum = 1000;
+		long clientThreadNum = 3000;
 		if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
 			clientThreadNum = Long.valueOf(args[0]);
 			System.out.println("客户端建立链接数:" + clientThreadNum);
 		}
 
-		if (args.length > 0 && !StringUtils.isEmpty(args[1])) {
+		if (args.length > 1 && !StringUtils.isEmpty(args[1])) {
 			REQ_URL = "ws://" + args[1] + "/msg-center/websocket?token=" + TOKEN + "&projectId=fm";
 			System.out.println("远程连接地址:" + args[1]);
 		}
@@ -46,48 +52,69 @@ public class StompClient {
 		List<Transport> transports = new ArrayList<>(1);
 		transports.add(new WebSocketTransport(new StandardWebSocketClient()));
 		WebSocketClient transport = new SockJsClient(transports);
-		WebSocketStompClient stompClient = new WebSocketStompClient(transport);
+		stompClient = new WebSocketStompClient(transport);
 		stompClient.setMessageConverter(new StringMessageConverter());
-		StompSessionHandler sessionHandler = new MyStompSessionHandler();
+		sessionHandler = new MyStompSessionHandler();
 
-		ExecutorService executorService = new ThreadPoolExecutor(200, 1000, 60L, TimeUnit.SECONDS,
-				new LinkedBlockingQueue<>(10000));
+		ExecutorService executorService = new ThreadPoolExecutor(50, 1000, 60L, TimeUnit.SECONDS,
+				new LinkedBlockingQueue<>(500));
 
-		while (clientThreadNum-- > 0) {
-
-			Thread.sleep(1);
-
+		// 每条线程处理链接数
+		long singeDelNum = 100;
+		while (clientThreadNum > 0) {
+			long delNum = clientThreadNum > singeDelNum ? singeDelNum : clientThreadNum;
 			try {
-				executorService.submit(() -> {
-					int waitTime = 1000;
-					// while (true) {
-					// try {
-					ListenableFuture<StompSession> connect = stompClient.connect(REQ_URL, sessionHandler);
-					// StompSession stompSession = connect.get();
-					// if (stompSession != null) {
-					// break;
-					// }
-					// }
-					// catch (Exception e) {
-					// try {
-					// Thread.sleep(waitTime);
-					// waitTime += 1000;
-					// }
-					// catch (InterruptedException e1) {
-					// e1.printStackTrace();
-					// }
-					// e.printStackTrace();
-					// }
-
-					// }
-				});
+				executorService.submit(new DealThread(delNum));
 			}
 			catch (Exception e) {
 				Thread.sleep(5000);
-				clientThreadNum++;
-				e.printStackTrace();
+				continue;
 			}
+			clientThreadNum -= singeDelNum;
 		}
+
+		Thread.sleep(50000000);
+
+	}
+
+}
+
+class DealThread implements Runnable {
+
+	private long dealNum;
+
+	public DealThread(long dealNum) {
+		this.dealNum = dealNum;
+	}
+
+	@Override
+	public void run() {
+		int waitTime = 1;
+		while (dealNum > 0) {
+
+			try {
+				Thread.sleep(waitTime);
+				ListenableFuture<StompSession> connect = stompClient.connect(REQ_URL, sessionHandler);
+				StompSession stompSession = connect.get();
+				if (stompSession == null) {
+					waitTime += 1000;
+					continue;
+				}
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				waitTime += 1000;
+				continue;
+			}
+
+			// 走到后面说明连接成功,置回正常等待时间,处理下一位
+			if (waitTime > 1000) {
+				waitTime = 1;
+			}
+			dealNum--;
+		}
+
+		System.out.println(Thread.currentThread().getName() + " is die");
 	}
 
 }
