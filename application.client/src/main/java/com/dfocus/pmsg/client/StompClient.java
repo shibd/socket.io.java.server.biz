@@ -25,7 +25,7 @@ public class StompClient {
 
 	private static String REQ_URL = "ws://localhost:8080/msg-center/websocket?token=" + TOKEN + "&projectId=fm";
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 
 		long clientThreadNum = 5000;
 		if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
@@ -47,6 +47,7 @@ public class StompClient {
 
 		StompSessionHandler sessionHandler = new MyStompSessionHandler();
 		while (clientThreadNum-- > 0) {
+			Thread.sleep(10);
 			stompClient.connect(REQ_URL, sessionHandler);
 		}
 		// Don't close immediately.
