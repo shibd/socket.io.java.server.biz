@@ -13,6 +13,7 @@
 
     <properties>
         <link.number>100</link.number>
+        <remote.url>localhost:8080</remote.url>
     </properties>
 
     <dependencies>
@@ -32,6 +33,7 @@
                     <mainClass>com.dfocus.pmsg.client.StompClient</mainClass>
                     <arguments>
                         <argument>${link.number}</argument>
+                        <argument>${remote.url}</argument>
                     </arguments>
                     <classpathScope>test</classpathScope>
                     <cleanupDaemonThreads>false</cleanupDaemonThreads>
