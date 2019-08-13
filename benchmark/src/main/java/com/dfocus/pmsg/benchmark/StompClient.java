@@ -2,7 +2,6 @@ package com.dfocus.pmsg.benchmark;
 
 import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.simp.stomp.StompSession;
-import org.springframework.messaging.simp.stomp.StompSessionHandler;
 import org.springframework.util.StringUtils;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.socket.client.WebSocketClient;
@@ -32,11 +31,11 @@ public class StompClient {
 
 	public static WebSocketStompClient stompClient;
 
-	public static StompSessionHandler sessionHandler;
+	public static MyStompSessionHandler sessionHandler;
 
 	public static void main(String[] args) throws InterruptedException {
 
-		long clientThreadNum = 4;
+		long clientThreadNum = 400;
 		if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
 			clientThreadNum = Long.valueOf(args[0]);
 			System.out.println("客户端建立链接数:" + clientThreadNum);
@@ -71,7 +70,23 @@ public class StompClient {
 			clientThreadNum -= singeDelNum;
 		}
 
-		Thread.sleep(50000000);
+		// 定时打印counter
+		new Thread(() -> {
+			while (true) {
+				try {
+					Thread.sleep(5000);
+				}
+				catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				System.out.println("counter: " + sessionHandler.getCounter());
+
+			}
+		}).start();
+
+		while (true) {
+			Thread.sleep(Integer.MAX_VALUE);
+		}
 
 	}
 

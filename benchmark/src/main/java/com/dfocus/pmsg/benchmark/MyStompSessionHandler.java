@@ -18,7 +18,7 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
 	private Logger logger = LogManager.getLogger(MyStompSessionHandler.class);
 
-	private AtomicInteger count = new AtomicInteger(0);
+	private AtomicInteger counter = new AtomicInteger(0);
 
 	@Override
 	public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
@@ -35,19 +35,13 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
 	@Override
 	public void handleFrame(StompHeaders headers, Object payload) {
+		counter.incrementAndGet();
 		logger.info(
-				Thread.currentThread().getName() + " counter:" + count.incrementAndGet() + "--> Received : " + payload);
+				Thread.currentThread().getName() + ", messageId:" + headers.getMessageId() + ", message::" + payload);
 	}
 
-	/**
-	 * A sample message instance.
-	 * @return instance of <code>Message</code>
-	 */
-	private Message getSampleMessage() {
-		Message msg = new Message();
-		msg.setFrom("Nicky");
-		msg.setText("Howdy!!");
-		return msg;
+	public Integer getCounter() {
+		return counter.get();
 	}
 
 }
