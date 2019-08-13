@@ -93,18 +93,19 @@ public class StompClient {
 					ListenableFuture<StompSession> connect = stompClient.connect(REQ_URL, sessionHandler);
 					StompSession stompSession = connect.get();
 					if (stompSession == null) {
-						waitTime += 1000;
+						waitTime += 3000;
 						continue;
 					}
 				}
 				catch (Exception e) {
+					System.out.println("这是错误,需要重试:" + waitTime);
 					e.printStackTrace();
-					waitTime += 1000;
+					waitTime += 3000;
 					continue;
 				}
 
 				// 走到后面说明连接成功,置回正常等待时间,处理下一位
-				if (waitTime > 1000) {
+				if (waitTime > 3000) {
 					waitTime = 1;
 				}
 				dealNum--;
