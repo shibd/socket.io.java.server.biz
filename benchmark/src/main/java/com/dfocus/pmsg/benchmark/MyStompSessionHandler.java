@@ -7,6 +7,8 @@ import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * @author: baozi
  * @date: 2019/8/9 14:55
@@ -15,6 +17,8 @@ import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 public class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
 	private Logger logger = LogManager.getLogger(MyStompSessionHandler.class);
+
+	private AtomicInteger count = new AtomicInteger(0);
 
 	@Override
 	public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
@@ -31,7 +35,8 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
 	@Override
 	public void handleFrame(StompHeaders headers, Object payload) {
-		logger.info(Thread.currentThread().getName() + "--> Received : " + payload);
+		logger.info(
+				Thread.currentThread().getName() + " counter:" + count.incrementAndGet() + "--> Received : " + payload);
 	}
 
 	/**

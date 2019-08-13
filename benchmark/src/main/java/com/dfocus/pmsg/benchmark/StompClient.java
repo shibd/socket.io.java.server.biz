@@ -36,7 +36,7 @@ public class StompClient {
 
 	public static void main(String[] args) throws InterruptedException {
 
-		long clientThreadNum = 3000;
+		long clientThreadNum = 4;
 		if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
 			clientThreadNum = Long.valueOf(args[0]);
 			System.out.println("客户端建立链接数:" + clientThreadNum);
