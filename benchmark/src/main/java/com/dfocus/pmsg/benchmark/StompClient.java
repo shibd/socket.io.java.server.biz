@@ -113,7 +113,7 @@ public class StompClient {
 					}
 				}
 				catch (Exception e) {
-					System.out.println("这是错误,需要重试:" + waitTime);
+					System.out.println("this si errer ,retry:" + waitTime);
 					e.printStackTrace();
 					waitTime += 3000;
 					continue;
