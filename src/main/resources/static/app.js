@@ -33,19 +33,19 @@ function disconnect() {
 }
 
 function sendName() {
-    var message = JSON.stringify({'name': $("#name").val()})
     $.ajax({
-        url: "/hello?message=" + message,
-        type: "get",
+        url: '/send/hello',
+        method: 'post',
+        data: JSON.stringify({name: 'test'}),
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
         success: function (e) {
-            console.log(e);
+            console.log(e)
         },
-        error: function () {
-            console.log(e);
+        error: function (e) {
+            console.log(e)
         }
     })
-
-    // stompClient.send("/app/hello", {},);
 }
 
 function showGreeting(message) {
