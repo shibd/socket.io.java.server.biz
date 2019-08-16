@@ -1,9 +1,0 @@
-#!/bin/sh
-
-# 发布facade.api到maven私有仓库
-
-set -e
-
-cd `dirname $0`/../
-
-mvn deploy -pl facade.api -am
