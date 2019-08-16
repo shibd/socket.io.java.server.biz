@@ -44,7 +44,7 @@ function connectCallback() {
 //连接失败时的回调函数
 function errorCallback(res) {
     // 错误取消重试
-    console.log('连接错误111:' + res)
+    console.log('connect fail:' + res)
 }
 
 function disconnect() {
