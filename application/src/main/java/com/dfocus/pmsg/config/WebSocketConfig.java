@@ -6,11 +6,13 @@ import com.dfocus.pmsg.service.atom.ISecretService;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -110,6 +112,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 		};
 	}
 
+	@Bean
+	public ThreadPoolTaskScheduler webSocketHeartbeatTaskScheduler() {
+		return new ThreadPoolTaskScheduler();
+	}
+
 	/**
 	 * 定义一些消息连接规范（也可不设置）
 	 * @param registry
@@ -121,7 +128,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 				// 广播消息前缀
 				"/topic",
 				// 点对点消息前缀
-				"/queue");
+				"/queue")
+				// 设置心跳调度器
+				.setTaskScheduler(webSocketHeartbeatTaskScheduler())
+				// 心跳频率 {服务端发送频率, 客户端发送频率}ms
+				.setHeartbeatValue(new long[] { 10000, 10000 });
 		// 设置客户端接收点对点消息地址的前缀，默认为 /user
 		registry.setUserDestinationPrefix("/user");
 		// 设置客户端向服务器发送消息的地址前缀（可不设置）
