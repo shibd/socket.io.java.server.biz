@@ -41,6 +41,7 @@ function connectCallback() {
     });
 }
 
+
 //连接失败时的回调函数
 function errorCallback(res) {
     // 错误取消重试
@@ -53,6 +54,31 @@ function disconnect() {
     }
     setConnected(false);
     console.log("Disconnected");
+}
+
+
+function sendName() {
+
+    var reqData = JSON.stringify({
+        'projectId': $("#project").val(),
+        'topic': $("#topic").val(),
+        'playLoad': '{"content":' + '"' + $("#name").val() + '"}',
+        'updateTime': 1557676800000
+    });
+
+    $.ajax({
+        url: '/msg-center/ws_message/topic',
+        method: 'post',
+        data: reqData,
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        success: function (e) {
+            console.log(e)
+        },
+        error: function (e) {
+            console.log(e)
+        }
+    })
 }
 
 function showGreeting(message) {
@@ -68,5 +94,8 @@ $(function () {
     });
     $("#disconnect").click(function () {
         disconnect();
+    });
+    $("#send").click(function () {
+        sendName();
     });
 });

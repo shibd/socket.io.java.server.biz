@@ -24,7 +24,7 @@ public class WsMessageServiceImpl implements IWsMessageService {
 
 		log.info("project:{}|group:{}|message:{}", message.getProjectId(), message.getTopic(), message.getPlayLoad());
 
-		String destination = String.format("/topic/%s/%s/", message.getProjectId(), message.getTopic());
+		String destination = String.format("/topic/%s/%s", message.getProjectId(), message.getTopic());
 
 		// 发送消息
 		messagingTemplate.convertAndSend(destination, message.getPlayLoad());

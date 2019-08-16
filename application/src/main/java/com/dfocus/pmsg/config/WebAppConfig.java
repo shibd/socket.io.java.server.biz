@@ -1,17 +1,16 @@
 package com.dfocus.pmsg.config;
 
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @author: baozi
  * @date: 2019/8/16 15:54
- * @description:
+ * @description: 解决跨域,打开后静态页面不正常,注释掉
  */
-@Configuration
-@EnableWebMvc
+// @Configuration
+// @EnableWebMvc
+// @CrossOrigin
 public class WebAppConfig implements WebMvcConfigurer {
 
 	@Override

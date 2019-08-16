@@ -7,7 +7,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -19,7 +18,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @Date: 2019/6/23 17:28
  * @Description:
  */
-@CrossOrigin
 @EnableSwagger2
 @MapperScan(AppConfiguration.DAO_PACKAGE)
 @EnableFeignClients(AppConfiguration.INTERGRATION_PACKAGE)
