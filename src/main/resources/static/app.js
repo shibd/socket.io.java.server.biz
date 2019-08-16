@@ -36,7 +36,7 @@ function sendName() {
     $.ajax({
         url: '/send/hello',
         method: 'post',
-        data: JSON.stringify({name: 'test'}),
+        data: JSON.stringify({'name': $("#name").val()}),
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
         success: function (e) {
