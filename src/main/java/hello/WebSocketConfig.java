@@ -6,19 +6,24 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+/**
+ * @author baozi Websocket配置类
+ */
 @Configuration
-@EnableWebSocketMessageBroker
+@EnableWebSocketMessageBroker // 使用此注解启动websocket,使用broker来处理消息
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
-        config.setApplicationDestinationPrefixes("/app");
-    }
+	@Override
+	// 实现WebSocketMessageBrokerConfigurer中的此方法，配置消息代理（broker）
+	public void configureMessageBroker(MessageBrokerRegistry config) {
+		// 启用SimpleBroker，使得订阅到此"topic"前缀的客户端可以收到greeting消息.
+		config.enableSimpleBroker("/topic");
+	}
 
-    @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/gs-guide-websocket").withSockJS();
-    }
+	@Override
+	// 用来注册Endpoint，“/gs-guide-websocket”即为客户端尝试建立连接的后缀地址。
+	public void registerStompEndpoints(StompEndpointRegistry registry) {
+		registry.addEndpoint("/gs-guide-websocket").withSockJS();
+	}
 
 }
