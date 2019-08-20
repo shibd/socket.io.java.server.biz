@@ -24,14 +24,6 @@ public class JwtOncePerRequestFilter extends OncePerRequestFilter {
 			FilterChain filterChain) throws ServletException, IOException {
 
 		boolean b = httpServletRequest.getRequestURI().startsWith("/msg-center/websocket");
-		System.out.println(b);
-		log.info("jinlaile");
-		// UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new
-		// UsernamePasswordAuthenticationToken(
-		// "", "");
-		// usernamePasswordAuthenticationToken.setAuthenticated(true);
-		// SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-
 		// throw new RuntimeException("sdsds");
 		filterChain.doFilter(httpServletRequest, httpServletResponse);
 	}
