@@ -11,7 +11,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.messaging.simp.stomp.StompCommand;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -22,6 +30,7 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 import java.security.Principal;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -41,6 +50,30 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
 	public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
 		WebSocketMessageBrokerConfigurer.super.configureWebSocketTransport(registry);
+	}
+
+	@Override
+	public void configureClientInboundChannel(ChannelRegistration registration) {
+		registration.interceptors(new ChannelInterceptor() {
+			@Override
+			public Message<?> preSend(Message<?> message, MessageChannel channel) {
+				StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+				if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+					Map<String, LinkedList> headers = (Map) message.getHeaders()
+							.get(SimpMessageHeaderAccessor.NATIVE_HEADERS);
+
+					String token = headers.get("token").get(0).toString();
+					String projectId = headers.get("projectId").get(0).toString();
+
+					System.out.println("token: " + token);
+					System.out.println("projectId: " + projectId);
+
+					// 校验会抛出异常,不知道客户端会收到什么
+					accessor.setUser(authenticate(projectId, token));
+				}
+				return message;
+			}
+		});
 	}
 
 	/**
@@ -76,18 +109,20 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 					WebSocketHandler wsHandler, Map<String, Object> attributes) {
 				ServletServerHttpRequest req = (ServletServerHttpRequest) request;
 
-				// 根据token认证用户，不通过返回拒绝握手
-				String token = req.getServletRequest().getParameter("token");
-				String projectId = req.getServletRequest().getParameter("projectId");
-				Principal user = authenticate(projectId, token);
-				if (user == null) {
-					return false;
-				}
+				System.out.println("握手拦截器");
 
-				// 保存会话信息
-				attributes.put("user", user);
-				attributes.put("remoteUrl", request.getRemoteAddress());
-				attributes.put("projectId", projectId);
+				// 根据token认证用户，不通过返回拒绝握手
+				// String token = req.getServletRequest().getParameter("token");
+				// String projectId = req.getServletRequest().getParameter("projectId");
+				// Principal user = authenticate(projectId, token);
+				// if (user == null) {
+				// return false;
+				// }
+				//
+				// // 保存会话信息
+				// attributes.put("user", user);
+				// attributes.put("remoteUrl", request.getRemoteAddress());
+				// attributes.put("projectId", projectId);
 				return true;
 			}
 
@@ -147,7 +182,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 		String publicKey = projectKeyService.selectPublicKeyByProjectId(projectId);
 		Map<String, Claim> payLoad = JwtRsaUtils.verify(publicKey, token);
 		if (payLoad == null) {
-			return null;
+			// throw new BadCredentialsException();
+			throw new RuntimeException("auth fail");
 		}
 		// 用户信息需继承 Principal 并实现 getName() 方法，返回全局唯一值
 		String userName = payLoad.get("userName").asString();

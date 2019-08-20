@@ -71,6 +71,20 @@
             <artifactId>webjars-locator-core</artifactId>
         </dependency>
 
+
+        <!--<dependency>-->
+        <!--<groupId>org.springframework</groupId>-->
+        <!--<artifactId>spring-messaging</artifactId>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-starter-security</artifactId>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.security</groupId>-->
+        <!--<artifactId>spring-security-messaging</artifactId>-->
+        <!--</dependency>-->
+
         <!-- websocket -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -116,8 +130,8 @@
                     <execution>
                         <id>application</id>
                         <!--<goals>-->
-                            <!--<goal>build</goal>-->
-                            <!--<goal>push</goal>-->
+                        <!--<goal>build</goal>-->
+                        <!--<goal>push</goal>-->
                         <!--</goals>-->
                         <configuration>
                             <dockerfile>./</dockerfile>
