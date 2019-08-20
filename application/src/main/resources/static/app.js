@@ -15,11 +15,14 @@ function setConnected(connected) {
 function connect() {
     var token = $("#token").val();
     var projectId = $("#project").val();
-    var socket = new SockJS('/msg-center/websocket?token=' + token + "&projectId=" + projectId)
+    var socket = new SockJS('/msg-center/websocket')
     stompClient = Stomp.over(socket);
     // stomp.heartbeat.outgoing = 20000; //若使用STOMP 1.1 版本，默认开启了心跳检测机制（默认值都是10000ms）
     // stomp.heartbeat.incoming = 0; //客户端不从服务端接收心跳包
-    stompClient.connect({}, connectCallback, errorCallback);
+    stompClient.connect({
+        token: token,
+        projectId: projectId
+    }, connectCallback, errorCallback);
 }
 
 //连接成功时的回调函数

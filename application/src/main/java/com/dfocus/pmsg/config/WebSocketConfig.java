@@ -10,8 +10,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.messaging.simp.stomp.StompCommand;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -19,9 +26,9 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 import org.springframework.web.socket.server.HandshakeInterceptor;
-import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 import java.security.Principal;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -44,6 +51,28 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	}
 
 	/**
+	 * 配置STOMP认证管道
+	 * @param registration
+	 */
+	@Override
+	public void configureClientInboundChannel(ChannelRegistration registration) {
+		registration.interceptors(new ChannelInterceptor() {
+			@Override
+			public Message<?> preSend(Message<?> message, MessageChannel channel) {
+				StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+				if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+					Map<String, LinkedList> headers = (Map) message.getHeaders()
+							.get(SimpMessageHeaderAccessor.NATIVE_HEADERS);
+					// 鉴权,校验失败会抛出异常,通过ws把消息给到客户端
+					Principal user = authenticate(headers);
+					accessor.setUser(user);
+				}
+				return message;
+			}
+		});
+	}
+
+	/**
 	 * 注册STOMP协议节点并映射url
 	 * @param registry
 	 */
@@ -54,8 +83,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 				.addEndpoint("/websocket").addInterceptors()
 				// 添加 websocket握手拦截器
 				.addInterceptors(myHandshakeInterceptor())
-				// 添加 websocket握手处理器
-				.setHandshakeHandler(myDefaultHandshakeHandler())
 				// 设置允许可跨域的域名(一定程度预防CSRF攻击)
 				.setAllowedOrigins("*")
 				// 指定使用SockJS协议
@@ -74,40 +101,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 			@Override
 			public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
 					WebSocketHandler wsHandler, Map<String, Object> attributes) {
-				ServletServerHttpRequest req = (ServletServerHttpRequest) request;
-
-				// 根据token认证用户，不通过返回拒绝握手
-				String token = req.getServletRequest().getParameter("token");
-				String projectId = req.getServletRequest().getParameter("projectId");
-				Principal user = authenticate(projectId, token);
-				if (user == null) {
-					return false;
-				}
-
 				// 保存会话信息
-				attributes.put("user", user);
 				attributes.put("remoteUrl", request.getRemoteAddress());
-				attributes.put("projectId", projectId);
 				return true;
 			}
 
 			@Override
 			public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
 					WebSocketHandler wsHandler, Exception exception) {
-			}
-		};
-	}
-
-	/**
-	 * WebSocket 握手处理器
-	 */
-	private DefaultHandshakeHandler myDefaultHandshakeHandler() {
-		return new DefaultHandshakeHandler() {
-			@Override
-			protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler,
-					Map<String, Object> attributes) {
-				// 设置认证通过的用户到当前会话中
-				return (Principal) attributes.get("user");
 			}
 		};
 	}
@@ -141,13 +142,23 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	/**
 	 * 根据jwt认证授权
-	 * @param token
 	 */
-	private Principal authenticate(String projectId, String token) {
+	private Principal authenticate(Map<String, LinkedList> headers) {
+
+		String token;
+		String projectId;
+		try {
+			token = headers.get("token").get(0).toString();
+			projectId = headers.get("projectId").get(0).toString();
+		}
+		catch (Exception e) {
+			throw new AuthFailException("auth fail");
+		}
+
 		String publicKey = projectKeyService.selectPublicKeyByProjectId(projectId);
 		Map<String, Claim> payLoad = JwtRsaUtils.verify(publicKey, token);
 		if (payLoad == null) {
-			return null;
+			throw new AuthFailException(String.format("auth fail, projectId:%s, token:%s", projectId, token));
 		}
 		// 用户信息需继承 Principal 并实现 getName() 方法，返回全局唯一值
 		String userName = payLoad.get("userName").asString();
@@ -172,6 +183,19 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 		@Override
 		public String getName() {
 			return name;
+		}
+
+	}
+
+	/**
+	 * @auther: baozi
+	 * @date: 2019/8/5 10:44
+	 * @description: 认证失败异常
+	 */
+	private class AuthFailException extends RuntimeException {
+
+		public AuthFailException(String message) {
+			super(message);
 		}
 
 	}
