@@ -1,6 +1,7 @@
 package com.dfocus.pmsg.benchmark;
 
 import org.springframework.messaging.converter.StringMessageConverter;
+import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.util.StringUtils;
 import org.springframework.util.concurrent.ListenableFuture;
@@ -11,7 +12,9 @@ import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -27,7 +30,7 @@ public class StompClient {
 
 	public static String TOKEN = "eyJ1c2VyTmFtZSI6Ind1ZGl4aWFvYmFvemkiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE1Njc1OTE1NDYsInVzZXJOYW1lIjoid3VkaXhpYW9iYW96aSIsImlhdCI6MTU2NDk5OTU0Nn0.dEJzjgwwZCL6qh3NtluVSo0uZZZdUEzrNF2pLsUxprVOSE-pzaUVlOw2EmntXd4IpFs3qI0IwA4F51VOFIX65lc1RoX93AFeb44CYt9JpXKcGtGYWQr2D4nsNMaS7je8abtastBC8QIInCYtC7s8tvaAQRzYTvCZmSM8vtgu06g";
 
-	public static String REQ_URL = "ws://139.217.99.53:8080/msg-center/websocket?token=" + TOKEN + "&projectId=fm";
+	public static String REQ_URL = "ws://139.217.99.53:8080/msg-center/websocket";
 
 	public static WebSocketStompClient stompClient;
 
@@ -35,14 +38,14 @@ public class StompClient {
 
 	public static void main(String[] args) throws InterruptedException {
 
-		long clientThreadNum = 400;
+		long clientThreadNum = 1000;
 		if (args.length > 0 && !StringUtils.isEmpty(args[0])) {
 			clientThreadNum = Long.valueOf(args[0]);
 			System.out.println("客户端建立链接数:" + clientThreadNum);
 		}
 
 		if (args.length > 1 && !StringUtils.isEmpty(args[1])) {
-			REQ_URL = "ws://" + args[1] + "/msg-center/websocket?token=" + TOKEN + "&projectId=fm";
+			REQ_URL = "ws://" + args[1] + "/msg-center/websocket";
 			System.out.println("远程连接地址:" + args[1]);
 		}
 
@@ -50,6 +53,7 @@ public class StompClient {
 		transports.add(new WebSocketTransport(new StandardWebSocketClient()));
 		WebSocketClient transport = new SockJsClient(transports);
 		stompClient = new WebSocketStompClient(transport);
+
 		stompClient.setMessageConverter(new StringMessageConverter());
 		sessionHandler = new MyStompSessionHandler();
 
@@ -105,7 +109,18 @@ public class StompClient {
 
 				try {
 					Thread.sleep(waitTime);
-					ListenableFuture<StompSession> connect = stompClient.connect(REQ_URL, sessionHandler);
+
+					StompHeaders stompHeaders = new StompHeaders();
+					stompHeaders.put("token", Arrays.asList(TOKEN));
+					stompHeaders.put("projectId", Arrays.asList("fm"));
+
+					// 设置心跳
+					// stompClient.setTaskScheduler();
+					// stompHeaders.setHeartbeat(new long[] { 10000, 10000 });
+
+					ListenableFuture<StompSession> connect = stompClient.connect(new URI(REQ_URL), null, stompHeaders,
+							sessionHandler);
+
 					StompSession stompSession = connect.get();
 					if (stompSession == null) {
 						waitTime += 3000;

@@ -90,7 +90,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	}
 
 	/**
-	 * WebSocket 握手拦截器 可做一些用户认证拦截处理
+	 * WebSocket 握手拦截器 可做一些用户认证,保存会话信息等
 	 */
 	private HandshakeInterceptor myHandshakeInterceptor() {
 		return new HandshakeInterceptor() {
