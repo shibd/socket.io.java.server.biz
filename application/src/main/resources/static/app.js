@@ -44,12 +44,55 @@ function connectCallback() {
     });
 }
 
+var _breakReason;
+var INVALID_TOKEN = 'INVALID_TOKEN';
 
 //连接失败时的回调函数
-function errorCallback(res) {
+function errorCallback(error) {
     // 错误取消重试
-    console.log('connect fail:' + res)
+    console.log('connect fail:' + error)
+
+    setConnected(false);
+
+    if (_breakReason === INVALID_TOKEN) {
+        // error callback will be called twice, that's why we record _breakReason with first call
+        // we should just leave the callback if _breakReason from last call exist and match invalid_token
+        return
+    }
+    // quit here since token is checked as invalid by server
+    // no need to re-connect with same arguments
+    if (
+        error &&
+        error.headers &&
+        error.headers.message &&
+        error.headers.message.includes('Failed to send message')
+    ) {
+        _setBreakReason(INVALID_TOKEN)
+        return
+    }
+    reconnect()
+
 }
+
+function reconnect() {
+    console.log("30s retrying connect")
+    setTimeout(() => {
+        connect();
+}, 30000
+)
+}
+
+function _setBreakReason(reason) {
+    _breakReason = reason
+
+    // clear _breakReason in 2s
+    setTimeout(() => {
+        _breakReason = null
+    }, 5000
+)
+
+}
+
 
 function disconnect() {
     if (stompClient !== null) {
