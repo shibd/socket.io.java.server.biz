@@ -48,7 +48,7 @@ public class WebSocketEventListener {
 	@EventListener
 	public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        logger.info("Session:{} Disconnected", headerAccessor.getSessionId());
+		logger.info("Session:{} Disconnected", headerAccessor.getSessionId());
 		sessionService.deleteSession(headerAccessor.getSessionId());
 	}
 
