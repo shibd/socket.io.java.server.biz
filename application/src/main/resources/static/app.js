@@ -70,6 +70,7 @@ function errorCallback(error) {
         error.headers.message.includes('auth_fail')
     ) {
         _setBreakReason(INVALID_TOKEN)
+        console.log("auth fail, no reconnect")
         return
     }
 
