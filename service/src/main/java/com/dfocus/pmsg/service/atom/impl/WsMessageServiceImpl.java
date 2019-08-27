@@ -37,7 +37,7 @@ public class WsMessageServiceImpl implements IWsMessageService {
 
 		log.info("project:{}|user:{}|message:{}", message.getProjectId(), message.getUser(), message.getPlayLoad());
 
-		String destination = String.format("/queue/%s/", message.getProjectId());
+		String destination = String.format("/queue/%s", message.getProjectId());
 
 		// 发送消息
 		messagingTemplate.convertAndSendToUser(message.getUser(), destination, message.getPlayLoad());

@@ -39,7 +39,7 @@ function connectCallback() {
     });
 
     // 订阅单用户消息
-    stompClient.subscribe('/user/queue/' + project + '/', function (greeting) {
+    stompClient.subscribe('/user/queue/' + project, function (greeting) {
         showGreeting('UserMessage: ' + JSON.parse(greeting.body).content);
     });
 }
