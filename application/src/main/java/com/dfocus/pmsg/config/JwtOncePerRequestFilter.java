@@ -22,10 +22,10 @@ public class JwtOncePerRequestFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
 			FilterChain filterChain) throws ServletException, IOException {
-
-		boolean b = httpServletRequest.getRequestURI().startsWith("/msg-center/websocket");
-		// throw new RuntimeException("sdsds");
-		filterChain.doFilter(httpServletRequest, httpServletResponse);
+//
+//		boolean b = httpServletRequest.getRequestURI().startsWith("/msg-center/websocket");
+//		// throw new RuntimeException("sdsds");
+//		filterChain.doFilter(httpServletRequest, httpServletResponse);
 	}
 
 }
