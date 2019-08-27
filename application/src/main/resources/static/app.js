@@ -15,7 +15,7 @@ function setConnected(connected) {
 function connect() {
     var token = $("#token").val();
     var projectId = $("#project").val();
-    var socket = new SockJS('/msg-center/websocket')
+    var socket = new SockJS('/msg-center/dfocus')
     stompClient = Stomp.over(socket);
     // stomp.heartbeat.outgoing = 20000; //若使用STOMP 1.1 版本，默认开启了心跳检测机制（默认值都是10000ms）
     // stomp.heartbeat.incoming = 0; //客户端不从服务端接收心跳包
@@ -59,19 +59,22 @@ function errorCallback(error) {
         // we should just leave the callback if _breakReason from last call exist and match invalid_token
         return
     }
+
     // quit here since token is checked as invalid by server
     // no need to re-connect with same arguments
     if (
         error &&
+        error.command === 'ERROR' &&
         error.headers &&
         error.headers.message &&
-        error.headers.message.includes('Failed to send message')
+        error.headers.message.includes('auth_fail')
     ) {
         _setBreakReason(INVALID_TOKEN)
         return
     }
-    reconnect()
 
+    // if no auth fail, reconnect
+    reconnect()
 }
 
 function reconnect() {

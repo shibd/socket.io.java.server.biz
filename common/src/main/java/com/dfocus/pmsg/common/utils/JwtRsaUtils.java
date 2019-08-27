@@ -62,24 +62,18 @@ public class JwtRsaUtils {
 	 * @param token
 	 * @return null: 校验失败
 	 */
-	public static Map<String, Claim> verify(String publicKeyStr, String token) {
+	public static Map<String, Claim> verify(String publicKeyStr, String token) throws Exception {
 		DecodedJWT jwt;
-		try {
-			// 生成签名公钥
-			byte[] keyBytes = (new BASE64Decoder()).decodeBuffer(publicKeyStr);
-			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-			PublicKey publicKey = keyFactory.generatePublic(keySpec);
+		// 生成签名公钥
+		byte[] keyBytes = (new BASE64Decoder()).decodeBuffer(publicKeyStr);
+		X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+		PublicKey publicKey = keyFactory.generatePublic(keySpec);
 
-			// 校验
-			JWTVerifier verifier = JWT.require(Algorithm.RSA256((RSAKey) publicKey)).build();
-			jwt = verifier.verify(token);
-			return jwt.getClaims();
-		}
-		catch (Exception ex) {
-			log.error("verify jwt token failed, token={}", token, ex);
-			return null;
-		}
+		// 校验
+		JWTVerifier verifier = JWT.require(Algorithm.RSA256((RSAKey) publicKey)).build();
+		jwt = verifier.verify(token);
+		return jwt.getClaims();
 	}
 
 }

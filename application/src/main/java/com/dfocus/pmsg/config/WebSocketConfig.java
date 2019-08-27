@@ -12,12 +12,16 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.GenericMessage;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.socket.WebSocketHandler;
@@ -29,6 +33,7 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import java.security.Principal;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,7 +56,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	}
 
 	/**
-	 * 配置STOMP认证管道
+	 * STOMP入口拦截, 解析token如果成果就放入user
 	 * @param registration
 	 */
 	@Override
@@ -63,9 +68,47 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 				if (StompCommand.CONNECT.equals(accessor.getCommand())) {
 					Map<String, LinkedList> headers = (Map) message.getHeaders()
 							.get(SimpMessageHeaderAccessor.NATIVE_HEADERS);
-					// 鉴权,校验失败会抛出异常,通过ws把消息给到客户端
-					Principal user = authenticate(headers);
-					accessor.setUser(user);
+					String token = headers.get("token").get(0).toString();
+					String projectId = headers.get("projectId").get(0).toString();
+					Principal user = authenticate(token, projectId);
+					if (user != null) {
+						accessor.setUser(user);
+					}
+				}
+				return message;
+			}
+		});
+	}
+
+	/**
+	 * STOMP响应拦截, 在CONNECT_ACK时发送认证结果
+	 * @param registration
+	 */
+	@Override
+	public void configureClientOutboundChannel(ChannelRegistration registration) {
+
+		registration.interceptors(new ChannelInterceptor() {
+			@Override
+			public Message<?> preSend(Message<?> message, MessageChannel channel) {
+				SimpMessageType simpMessageType = (SimpMessageType) message.getHeaders().get("simpMessageType");
+				if (simpMessageType == SimpMessageType.CONNECT_ACK) {
+					MessageHeaders headers = message.getHeaders();
+					GenericMessage simpConnectMessage = (GenericMessage) headers.get("simpConnectMessage");
+
+					Map<String, Object> nativeHeaders = (Map<String, Object>) simpConnectMessage.getHeaders()
+							.get("nativeHeaders");
+
+					String token = ((List<String>) nativeHeaders.get("token")).get(0);
+					String projectId = ((List<String>) nativeHeaders.get("projectId")).get(0);
+
+					Principal user = authenticate(token, projectId);
+					if (user == null) {
+						StompHeaderAccessor headerAccessor = StompHeaderAccessor.create(StompCommand.ERROR);
+						headerAccessor.setMessage("auth_fail");
+						headerAccessor.setSessionId(headers.get("simpSessionId").toString());
+						return MessageBuilder.createMessage("AUTH_FAIL".getBytes(), headerAccessor.getMessageHeaders());
+					}
+
 				}
 				return message;
 			}
@@ -79,8 +122,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		registry
-				// 注册一个 /websocket 的 websocket 节点
-				.addEndpoint("/websocket").addInterceptors()
+				// 注册一个 /dfocus 的 websocket 节点
+				.addEndpoint("/dfocus").addInterceptors()
 				// 添加 websocket握手拦截器
 				.addInterceptors(myHandshakeInterceptor())
 				// 设置允许可跨域的域名(一定程度预防CSRF攻击)
@@ -143,26 +186,19 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	/**
 	 * 根据jwt认证授权
 	 */
-	private Principal authenticate(Map<String, LinkedList> headers) {
-
-		String token;
-		String projectId;
+	private Principal authenticate(String token, String projectId) {
+		String userName;
 		try {
-			token = headers.get("token").get(0).toString();
-			projectId = headers.get("projectId").get(0).toString();
+			String publicKey = projectKeyService.selectPublicKeyByProjectId(projectId);
+			Map<String, Claim> payLoad = JwtRsaUtils.verify(publicKey, token);
+			// 用户信息需继承 Principal 并实现 getName() 方法，返回全局唯一值
+			userName = payLoad.get("userName").asString();
+			log.info("userName connect success, projectId:{}, userName:{}", projectId, userName);
 		}
 		catch (Exception e) {
-			throw new AuthFailException("auth fail");
+			log.warn("auth fail: " + e.getMessage());
+			return null;
 		}
-
-		String publicKey = projectKeyService.selectPublicKeyByProjectId(projectId);
-		Map<String, Claim> payLoad = JwtRsaUtils.verify(publicKey, token);
-		if (payLoad == null) {
-			throw new AuthFailException(String.format("auth fail, projectId:%s, token:%s", projectId, token));
-		}
-		// 用户信息需继承 Principal 并实现 getName() 方法，返回全局唯一值
-		String userName = payLoad.get("userName").asString();
-		log.info("userName connect success, projectId:{}, userName:{}", projectId, userName);
 		return new User(userName);
 	}
 

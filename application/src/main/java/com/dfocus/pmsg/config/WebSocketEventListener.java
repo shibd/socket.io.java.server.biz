@@ -10,6 +10,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
@@ -47,11 +48,7 @@ public class WebSocketEventListener {
 	@EventListener
 	public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-		WebSocketConfig.User simpUser = (WebSocketConfig.User) headerAccessor.getHeader("simpUser");
-
-		Map<String, Object> sessionAttributes = headerAccessor.getSessionAttributes();
-		String remoteUrl = sessionAttributes.get("remoteUrl").toString();
-		logger.info("User Disconnected,{}:{}", simpUser.getName(), remoteUrl);
+        logger.info("Session:{} Disconnected", headerAccessor.getSessionId());
 		sessionService.deleteSession(headerAccessor.getSessionId());
 	}
 
