@@ -14,9 +14,20 @@
     <dependencies>
         <!-- websocket -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
+            <groupId>com.corundumstudio.socketio</groupId>
+            <artifactId>netty-socketio</artifactId>
+            <version>1.7.17</version>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>io.netty</groupId>-->
+            <!--<artifactId>netty-resolver</artifactId>-->
+            <!--<version>4.1.19.Final</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>io.netty</groupId>-->
+            <!--<artifactId>netty-transport</artifactId>-->
+            <!--<version>4.1.19.Final</version>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>
