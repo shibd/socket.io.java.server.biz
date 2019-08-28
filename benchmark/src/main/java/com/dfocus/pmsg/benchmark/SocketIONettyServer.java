@@ -5,7 +5,6 @@ import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -34,11 +33,10 @@ public class SocketIONettyServer {
 		config.setAuthorizationListener(new AuthorizationListener() {
 			@Override
 			public boolean isAuthorized(HandshakeData data) {
-				String token = data.getSingleUrlParam("token");
-				if (token.equals("test_token")) {
-					return true;
-				}
-				return false;
+				// String token = data.getSingleUrlParam("token");
+				// String username = JWTUtil.getSocketUsername(token);
+				// return JWTUtil.verifySocket(token, "secret");
+				return true;
 			}
 		});
 
@@ -53,22 +51,10 @@ public class SocketIONettyServer {
 				// 判断是否有客户端连接
 				if (client != null) {
 					System.out.println(("连接成功。clientId=" + client.getSessionId().toString()));
-
-					String projectId = client.getHandshakeData().getSingleUrlParam("projectId");
-					String topic = client.getHandshakeData().getSingleUrlParam("topic");
-					String token = client.getHandshakeData().getSingleUrlParam("token");
-
-					System.out.println("projectId:" + projectId + "  topic:" + topic + "  token:" + token);
-
-					// 构造namespace
-					server.addNamespace("/" + projectId);
-
-					// 加入到一个room
-					client.joinRoom(topic);
-
+					client.joinRoom(client.getHandshakeData().getSingleUrlParam("appid"));
 				}
 				else {
-					System.out.println(("并没有人连接上。。。"));
+					System.out.println("并没有人连接上。。。");
 				}
 			}
 		});
@@ -77,11 +63,10 @@ public class SocketIONettyServer {
 		 * 添加监听事件，监听客户端的事件 1.第一个参数eventName需要与客户端的事件要一致 2.第二个参数eventClase是传输的数据类型
 		 * 3.第三个参数listener是用于接收客户端传的数据，数据类型需要与eventClass一致
 		 */
-		server.addEventListener("login", LoginRequest.class, new DataListener<LoginRequest>() {
+		server.addEventListener("login", String.class, new DataListener<String>() {
 			@Override
-			public void onData(SocketIOClient client, LoginRequest data, AckRequest ackRequest) {
-				System.out.println(("接收到客户端login消息：" + data.getBody()));
-
+			public void onData(SocketIOClient client, String data, AckRequest ackRequest) {
+				System.out.println(("接收到客户端login消息：code = " + data));
 				// check is ack requested by client, but it's not required check
 				if (ackRequest.isAckRequested()) {
 					// send ack response with data to client
@@ -91,36 +76,12 @@ public class SocketIONettyServer {
 				List<String> list = new ArrayList<>();
 				list.add("登录成功，sessionId=" + client.getSessionId());
 				// 第一个参数必须与eventName一致，第二个参数data必须与eventClass一致
-				String topic = client.getHandshakeData().getSingleUrlParam("topic");
-				server.getRoomOperations(topic).sendEvent("login", list.toString());
+				String room = client.getHandshakeData().getSingleUrlParam("appid");
+				server.getRoomOperations(room).sendEvent("login", list.toString());
 			}
 		});
-
 		// 启动服务
 		server.start();
-
-		while (true) {
-			try {
-				Thread.sleep(10000);
-
-				SocketIONamespace fmNamespace = server.getNamespace("/fm");
-				if (fmNamespace != null) {
-					System.out.println("发送fm消息,客户端数量:" + fmNamespace.getAllClients().size());
-					fmNamespace.getBroadcastOperations().sendEvent("test", "are you live fm?");
-				}
-
-				SocketIONamespace amNamespace = server.getNamespace("/am");
-				if (amNamespace != null) {
-					System.out.println("发送am消息,客户端数量:" + amNamespace.getAllClients().size());
-					amNamespace.getBroadcastOperations().sendEvent("test", "are you live am?");
-				}
-
-			}
-			catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-
 	}
 
 }
