@@ -1,10 +1,8 @@
 package com.dfocus.pmsg.benchmark;
 
 import com.corundumstudio.socketio.*;
-import com.corundumstudio.socketio.listener.ConnectListener;
-import com.corundumstudio.socketio.listener.DataListener;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -14,7 +12,7 @@ import java.util.List;
  */
 public class SocketIONettyServer {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		/*
 		 * 创建Socket，并设置监听端口
 		 */
@@ -46,26 +44,15 @@ public class SocketIONettyServer {
 		/*
 		 * 添加连接监听事件，监听是否与客户端连接到服务器
 		 */
-		server.addConnectListener(new ConnectListener() {
-			@Override
-			public void onConnect(SocketIOClient client) {
-				// 判断是否有客户端连接
-				if (client != null) {
-					System.out.println(("连接成功。clientId=" + client.getSessionId().toString()));
-
-					String topic = client.getHandshakeData().getSingleUrlParam("topic");
-
-                    SocketIONamespace namespace = client.getNamespace();
-                    System.out.println(namespace.getName());
-
-                    client.joinRoom(topic);
-				}
-				else {
-					System.out.println("并没有人连接上。。。");
-				}
+		server.addConnectListener(client -> {
+			// 判断是否有客户端连接
+			if (client != null) {
+				System.out.println(("连接成功。clientId=" + client.getSessionId().toString()));
+			}
+			else {
+				System.out.println("并没有人连接上。。。");
 			}
 		});
-
 
 		// 初始化namespace并监听登录消息
 		addListener(server, "/fm");
@@ -73,6 +60,25 @@ public class SocketIONettyServer {
 
 		// 启动服务
 		server.start();
+
+		SocketIONamespace fmNamespace = server.getNamespace("/fm");
+		SocketIONamespace amNamespace = server.getNamespace("/am");
+
+		while (true) {
+			Thread.sleep(10000);
+
+			BroadcastOperations group_fm1 = fmNamespace.getRoomOperations("group_1");
+			group_fm1.sendEvent("group_1", Arrays.asList("这是从fm的namespace下找到room发送的广播消息fm-1"));
+            BroadcastOperations group_fm2 = fmNamespace.getRoomOperations("group_2");
+            group_fm2.sendEvent("group_2", Arrays.asList("这是从fm的namespace下找到room发送的广播消息fm-2"));
+
+			BroadcastOperations group_am1 = amNamespace.getRoomOperations("group_1");
+			group_am1.sendEvent("group_1", Arrays.asList("这是从am的namespace下找到room发送的广播消息am-1"));
+            BroadcastOperations group_am2 = amNamespace.getRoomOperations("group_2");
+            group_am2.sendEvent("group_2", Arrays.asList("这是从am的namespace下找到room发送的广播消息am-2"));
+
+		}
+
 	}
 
 	/**
@@ -84,28 +90,16 @@ public class SocketIONettyServer {
 	 * @param projectId
 	 */
 	private static void addListener(SocketIOServer server, String projectId) {
-        SocketIONamespace namespace = server.addNamespace(projectId);
-        for (SocketIOClient socketIOClient : namespace.getAllClients()) {
-            for (String s : socketIOClient.getAllRooms()) {
-                System.out.println(s);
+		SocketIONamespace namespace = server.addNamespace(projectId);
+		namespace.addEventListener("subscribe", List.class, (client, topics, ackRequest) -> {
+			System.out.println("接收到客户端订阅消息：code = " + topics.size());
+			for (Object topic : topics) {
+                client.joinRoom(topic.toString());
 			}
-		}
-        namespace.addEventListener("login", String.class, new DataListener<String>() {
-			@Override
-			public void onData(SocketIOClient client, String data, AckRequest ackRequest) {
-				System.out.println(("接收到客户端login消息：code = " + data));
-				// check is ack requested by client, but it's not required check
-				if (ackRequest.isAckRequested()) {
-					// send ack response with data to client
-					ackRequest.sendAckData("已成功收到客户端登录请求", "yeah");
-				}
-                // 向客户端发送消息
-				List<String> list = new ArrayList<>();
-				list.add("登录成功，projectId=" + projectId + "sessionId=" + client.getSessionId());
-				// 第一个参数必须与eventName一致，第二个参数data必须与eventClass一致
-				String topic = client.getHandshakeData().getSingleUrlParam("topic");
-                BroadcastOperations broadcastOperations = namespace.getBroadcastOperations();
-                namespace.getRoomOperations(topic).sendEvent("login", list.toString());
+			// check is ack requested by client, but it's not required check
+			if (ackRequest.isAckRequested()) {
+				// send ack response with data to client
+				ackRequest.sendAckData("订阅成功topic", topics);
 			}
 		});
 	}
