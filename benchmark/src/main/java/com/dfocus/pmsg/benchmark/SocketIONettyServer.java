@@ -33,10 +33,11 @@ public class SocketIONettyServer {
 		config.setAuthorizationListener(new AuthorizationListener() {
 			@Override
 			public boolean isAuthorized(HandshakeData data) {
-				// String token = data.getSingleUrlParam("token");
-				// String username = JWTUtil.getSocketUsername(token);
-				// return JWTUtil.verifySocket(token, "secret");
-				return true;
+				String token = data.getSingleUrlParam("token");
+				if (token.equals("test_token")) {
+					return true;
+				}
+				return false;
 			}
 		});
 
@@ -51,7 +52,13 @@ public class SocketIONettyServer {
 				// 判断是否有客户端连接
 				if (client != null) {
 					System.out.println(("连接成功。clientId=" + client.getSessionId().toString()));
-					client.joinRoom(client.getHandshakeData().getSingleUrlParam("appid"));
+
+					String topic = client.getHandshakeData().getSingleUrlParam("topic");
+
+                    SocketIONamespace namespace = client.getNamespace();
+                    System.out.println(namespace.getName());
+
+                    client.joinRoom(topic);
 				}
 				else {
 					System.out.println("并没有人连接上。。。");
@@ -59,11 +66,31 @@ public class SocketIONettyServer {
 			}
 		});
 
-		/*
-		 * 添加监听事件，监听客户端的事件 1.第一个参数eventName需要与客户端的事件要一致 2.第二个参数eventClase是传输的数据类型
-		 * 3.第三个参数listener是用于接收客户端传的数据，数据类型需要与eventClass一致
-		 */
-		server.addEventListener("login", String.class, new DataListener<String>() {
+
+		// 初始化namespace并监听登录消息
+		addListener(server, "/fm");
+		addListener(server, "/am");
+
+		// 启动服务
+		server.start();
+	}
+
+	/**
+	 * 添加监听事件，监听客户端的事件<br>
+	 * 1.第一个参数eventName需要与客户端的事件要一致<br>
+	 * 2.第二个参数eventClase是传输的数据类型<br>
+	 * 3.第三个参数listener是用于接收客户端传的数据，数据类型需要与eventClass一致<br>
+	 * @param server
+	 * @param projectId
+	 */
+	private static void addListener(SocketIOServer server, String projectId) {
+        SocketIONamespace namespace = server.addNamespace(projectId);
+        for (SocketIOClient socketIOClient : namespace.getAllClients()) {
+            for (String s : socketIOClient.getAllRooms()) {
+                System.out.println(s);
+			}
+		}
+        namespace.addEventListener("login", String.class, new DataListener<String>() {
 			@Override
 			public void onData(SocketIOClient client, String data, AckRequest ackRequest) {
 				System.out.println(("接收到客户端login消息：code = " + data));
@@ -72,16 +99,15 @@ public class SocketIONettyServer {
 					// send ack response with data to client
 					ackRequest.sendAckData("已成功收到客户端登录请求", "yeah");
 				}
-				// 向客户端发送消息
+                // 向客户端发送消息
 				List<String> list = new ArrayList<>();
-				list.add("登录成功，sessionId=" + client.getSessionId());
+				list.add("登录成功，projectId=" + projectId + "sessionId=" + client.getSessionId());
 				// 第一个参数必须与eventName一致，第二个参数data必须与eventClass一致
-				String room = client.getHandshakeData().getSingleUrlParam("appid");
-				server.getRoomOperations(room).sendEvent("login", list.toString());
+				String topic = client.getHandshakeData().getSingleUrlParam("topic");
+                BroadcastOperations broadcastOperations = namespace.getBroadcastOperations();
+                namespace.getRoomOperations(topic).sendEvent("login", list.toString());
 			}
 		});
-		// 启动服务
-		server.start();
 	}
 
 }

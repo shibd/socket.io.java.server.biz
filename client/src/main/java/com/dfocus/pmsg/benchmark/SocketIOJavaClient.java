@@ -16,7 +16,11 @@ import java.util.stream.Collectors;
  */
 public class SocketIOJavaClient {
 
-    private static Socket socket;
+
+    private static final String projectIdFm = "fm";
+    private static final String projectIdAm = "am";
+    private static final String topic = "group1";
+    private static final String token = "test_token";
 
     public static void main(String[] args) throws URISyntaxException {
         IO.Options options = new IO.Options();
@@ -25,11 +29,26 @@ public class SocketIOJavaClient {
         options.reconnectionDelay = 1000;     // 失败重连的时间间隔(ms)
         options.timeout = 20000;              // 连接超时时间(ms)
         options.forceNew = true;
-        options.query = "username=test1&password=test1&appid=com.xncoding.apay2";
-        socket = IO.socket("http://localhost:9092/", options);
+
+        options.query = String.format("projectId=%s&topic=%s&token=%s", projectIdFm, topic, token);
+        Socket socketFm = IO.socket("http://localhost:9092/" + projectIdFm, options);
+
+
+        options.query = String.format("projectId=%s&topic=%s&token=%s", projectIdAm, topic, token);
+        Socket socketAm = IO.socket("http://localhost:9092/" + projectIdAm, options);
+
+        NamespaceClient(socketFm);
+        NamespaceClient(socketAm);
+
+        socketFm.connect();
+        socketAm.connect();
+    }
+
+    private static void NamespaceClient(Socket socket) {
         socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
+                System.out.println("客户端连接成功事件, 准备发起登录请求");
                 // 客户端一旦连接成功，开始发起登录请求
                 socket.emit("login", "**这是登录消息**", (Ack) args1 -> {
                     System.out.println("回执消息=" + Arrays.stream(args1).map(Object::toString).collect(Collectors.joining(",")));
@@ -74,7 +93,6 @@ public class SocketIOJavaClient {
                 socket.disconnect();
             }
         });
-        socket.connect();
     }
 
 }
