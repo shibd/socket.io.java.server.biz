@@ -28,16 +28,13 @@ public class SocketIONettyServer {
 		// Ping消息间隔（毫秒），默认25秒。客户端向服务器发送一条心跳消息间隔
 		config.setPingInterval(60000);
 		// 连接认证，这里使用token更合适
-		config.setAuthorizationListener(new AuthorizationListener() {
-			@Override
-			public boolean isAuthorized(HandshakeData data) {
-				String token = data.getSingleUrlParam("token");
-				if (token.equals("test_token")) {
-					return true;
-				}
-				return false;
-			}
-		});
+		config.setAuthorizationListener(data -> {
+            String token = data.getSingleUrlParam("token");
+            if (token.equals(SocketIOJavaClient.token)) {
+                return true;
+            }
+            return false;
+        });
 
 		final SocketIOServer server = new SocketIOServer(config);
 
@@ -92,7 +89,7 @@ public class SocketIONettyServer {
 	private static void addListener(SocketIOServer server, String projectId) {
 		SocketIONamespace namespace = server.addNamespace(projectId);
 		namespace.addEventListener("subscribe", List.class, (client, topics, ackRequest) -> {
-			System.out.println("接收到客户端订阅消息：code = " + topics.size());
+			System.out.println("接收到客户端订阅消息：code = " + topics.toString());
 			for (Object topic : topics) {
                 client.joinRoom(topic.toString());
 			}

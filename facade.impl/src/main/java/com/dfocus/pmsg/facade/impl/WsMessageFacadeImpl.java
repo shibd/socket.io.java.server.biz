@@ -20,13 +20,8 @@ public class WsMessageFacadeImpl implements WsMessageFacade {
 	private IWsMessageService wsMessageService;
 
 	@Override
-	public Response<Boolean> sendMessage(@RequestBody WsMessage.WsTopicMessage message) {
-		return Response.success(wsMessageService.sendToTopic(message));
-	}
-
-	@Override
-	public Response<Boolean> sendMessageToUser(@RequestBody WsMessage.WsUserMessage message) {
-		return Response.success(wsMessageService.sendToUser(message));
+	public Response<Boolean> sendMessage(@RequestBody WsMessage message) {
+		return Response.success(wsMessageService.send(message));
 	}
 
 }
