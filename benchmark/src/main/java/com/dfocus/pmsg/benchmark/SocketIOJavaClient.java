@@ -63,6 +63,7 @@ public class SocketIOJavaClient {
 							System.out.println("subscribe success");
 						}
 						else {
+                            isReConnect = false;
 							socket.disconnect();
 						}
 					});
