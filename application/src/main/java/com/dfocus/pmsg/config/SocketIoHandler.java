@@ -28,9 +28,9 @@ public class SocketIoHandler {
 	@Autowired
 	private ISecretService secretService;
 
-    /**
-     * todo 认证缓存,注意线程安全,性能,内存溢出等
-     */
+	/**
+	 * todo 认证缓存,注意线程安全,性能,内存溢出等
+	 */
 	private Set<String> authClients = new HashSet<>();
 
 	/**

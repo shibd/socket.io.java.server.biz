@@ -16,6 +16,7 @@ function connect() {
     var token = $("#token").val();
     var projectId = $("#project").val()
 
+    // var url = 'http://139.217.99.53:9092/' + projectId;
     var url = 'http://localhost:9092/' + projectId;
     socket = io.connect(url)
 
@@ -84,6 +85,7 @@ function sendName() {
 
     $.ajax({
         url: '/msg-center/ws_message/topic',
+        // url: 'http://139.217.99.53:8080/msg-center/ws_message/topic',
         method: 'post',
         data: reqData,
         dataType: 'json',

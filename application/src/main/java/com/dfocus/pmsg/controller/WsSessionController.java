@@ -24,36 +24,33 @@ import java.util.*;
 public class WsSessionController {
 
 	@Autowired
-    SocketIOServer server;
-
-
+	SocketIOServer server;
 
 	@ApiOperation("接口: 获取会话列表")
 	@RequestMapping(method = RequestMethod.GET, value = "/list")
 	Response<List<Map<String, Object>>> getSessions() {
 
-        SocketIONamespace namespace = server.getNamespace("/fm");
+		SocketIONamespace namespace = server.getNamespace("/fm");
 
-
-        List<Map<String, Object>> list = new ArrayList<>();
-        Collection<SocketIOClient> clients = namespace.getAllClients();
-        for (SocketIOClient client : clients) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("allRomms", client.getAllRooms());
-            map.put("namespace", client.getNamespace().getName());
-            map.put("sessionId", client.getSessionId());
-            map.put("remoteAddress", client.getRemoteAddress());
-            list.add(map);
+		List<Map<String, Object>> list = new ArrayList<>();
+		Collection<SocketIOClient> clients = namespace.getAllClients();
+		for (SocketIOClient client : clients) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("allRomms", client.getAllRooms());
+			map.put("namespace", client.getNamespace().getName());
+			map.put("sessionId", client.getSessionId());
+			map.put("remoteAddress", client.getRemoteAddress());
+			list.add(map);
 		}
-        return Response.success(list);
+		return Response.success(list);
 	}
 
-//	@ApiOperation("接口: 获取自己定义的属性")
-//	@RequestMapping(method = RequestMethod.GET, value = "/my_define/list")
-//	Response<List<WsSessionDto>> getMyDefineSessions() {
-//		return Response.success(iSessionService.getSessions());
-//	}
-//
+	// @ApiOperation("接口: 获取自己定义的属性")
+	// @RequestMapping(method = RequestMethod.GET, value = "/my_define/list")
+	// Response<List<WsSessionDto>> getMyDefineSessions() {
+	// return Response.success(iSessionService.getSessions());
+	// }
+	//
 	@ApiOperation("接口: 获取所有会话数目")
 	@RequestMapping(method = RequestMethod.GET, value = "/size")
 	Response<Integer> getSessionNumber() {

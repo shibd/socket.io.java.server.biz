@@ -63,7 +63,7 @@ public class SocketIOJavaClient {
 							System.out.println("subscribe success");
 						}
 						else {
-                            isReConnect = false;
+							isReConnect = false;
 							socket.disconnect();
 						}
 					});
@@ -103,8 +103,8 @@ public class SocketIOJavaClient {
 
 	public static void reConenect(Socket socket) {
 		try {
-		    if (!isReConnect) {
-		        return;
+			if (!isReConnect) {
+				return;
 			}
 			socket.disconnect();
 			System.out.println("正在进行重连");

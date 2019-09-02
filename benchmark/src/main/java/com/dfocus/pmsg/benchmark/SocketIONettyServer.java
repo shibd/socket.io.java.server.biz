@@ -29,12 +29,12 @@ public class SocketIONettyServer {
 		config.setPingInterval(60000);
 		// 连接认证，这里使用token更合适
 		config.setAuthorizationListener(data -> {
-            String token = data.getSingleUrlParam("token");
-            if (token.equals(SocketIOJavaClient.token)) {
-                return true;
-            }
-            return false;
-        });
+			String token = data.getSingleUrlParam("token");
+			if (token.equals(SocketIOJavaClient.token)) {
+				return true;
+			}
+			return false;
+		});
 
 		final SocketIOServer server = new SocketIOServer(config);
 
@@ -66,13 +66,13 @@ public class SocketIONettyServer {
 
 			BroadcastOperations group_fm1 = fmNamespace.getRoomOperations("group_1");
 			group_fm1.sendEvent("group_1", Arrays.asList("这是从fm的namespace下找到room发送的广播消息fm-1"));
-            BroadcastOperations group_fm2 = fmNamespace.getRoomOperations("group_2");
-            group_fm2.sendEvent("group_2", Arrays.asList("这是从fm的namespace下找到room发送的广播消息fm-2"));
+			BroadcastOperations group_fm2 = fmNamespace.getRoomOperations("group_2");
+			group_fm2.sendEvent("group_2", Arrays.asList("这是从fm的namespace下找到room发送的广播消息fm-2"));
 
 			BroadcastOperations group_am1 = amNamespace.getRoomOperations("group_1");
 			group_am1.sendEvent("group_1", Arrays.asList("这是从am的namespace下找到room发送的广播消息am-1"));
-            BroadcastOperations group_am2 = amNamespace.getRoomOperations("group_2");
-            group_am2.sendEvent("group_2", Arrays.asList("这是从am的namespace下找到room发送的广播消息am-2"));
+			BroadcastOperations group_am2 = amNamespace.getRoomOperations("group_2");
+			group_am2.sendEvent("group_2", Arrays.asList("这是从am的namespace下找到room发送的广播消息am-2"));
 
 		}
 
@@ -91,7 +91,7 @@ public class SocketIONettyServer {
 		namespace.addEventListener("subscribe", List.class, (client, topics, ackRequest) -> {
 			System.out.println("接收到客户端订阅消息：code = " + topics.toString());
 			for (Object topic : topics) {
-                client.joinRoom(topic.toString());
+				client.joinRoom(topic.toString());
 			}
 			// check is ack requested by client, but it's not required check
 			if (ackRequest.isAckRequested()) {

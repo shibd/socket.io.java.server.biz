@@ -15,4 +15,5 @@ public interface IWsMessageService {
 	 * @return
 	 */
 	boolean send(WsMessage wsMessage);
+
 }

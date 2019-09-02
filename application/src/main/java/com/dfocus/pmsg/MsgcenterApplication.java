@@ -15,9 +15,9 @@ public class MsgcenterApplication {
 
 		SocketIOServer socketIOServer = run.getBean("socketIOServer", SocketIOServer.class);
 		run.addApplicationListener((ApplicationListener<ContextClosedEvent>) event -> {
-            System.out.println("优雅停机SocketIOServer");
-            socketIOServer.stop();
-        });
+			System.out.println("优雅停机SocketIOServer");
+			socketIOServer.stop();
+		});
 	}
 
 }
