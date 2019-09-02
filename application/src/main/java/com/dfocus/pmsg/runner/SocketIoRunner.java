@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ import java.util.Map;
 @Slf4j
 @Order(1000)
 @Component
+@ConditionalOnProperty(value = "socket-io.enable", havingValue = "true", matchIfMissing = true)
 public class SocketIoRunner implements CommandLineRunner {
 
 	@Autowired
