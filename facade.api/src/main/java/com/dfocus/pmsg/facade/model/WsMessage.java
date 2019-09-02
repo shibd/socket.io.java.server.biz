@@ -22,7 +22,7 @@ public class WsMessage {
 	private String projectId;
 
 	/**
-	 * 主题
+	 * 订阅主题
 	 */
 	@ApiModelProperty(value = "订阅主题", example = "group_1")
 	private String topic;

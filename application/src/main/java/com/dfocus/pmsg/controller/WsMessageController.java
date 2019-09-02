@@ -55,7 +55,7 @@ public class WsMessageController {
 	 * @param message
 	 * @return
 	 */
-	@ApiOperation("接口: 发送广播消息")
+	@ApiOperation("接口: 发送消息")
 	@PostMapping("/topic")
 	Response<Boolean> sendMessage(@RequestBody WsMessage message) {
 		return Response.success(wsMessageService.send(message));

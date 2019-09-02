@@ -17,7 +17,9 @@ logging.config: classpath:xml/logback.xml
 # 集成中间件服务配置(根据工程需要选择性开关)
 spring.profiles.include: db,kafka,job,cloud
 
-xncoding:
+# socket-io
+socket-io:
   socket-port: 9092    #socket端口
   ping-interval: 60000 #Ping消息间隔（毫秒）
   ping-timeout: 180000 #Ping消息超时时间（毫秒）
+
