@@ -2,11 +2,10 @@
 <html>
 <head>
     <title>Hello WebSocket</title>
-    <link href="./webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="./main.css" rel="stylesheet">
+    <link href="./webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <script src="./webjars/jquery/jquery.min.js"></script>
-    <script src="./webjars/sockjs-client/sockjs.min.js"></script>
-    <script src="./webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="./socket.io.js"></script>
     <script src="./app.js"></script>
 </head>
 <body>
@@ -25,8 +24,8 @@
                            value="eyJ1c2VyTmFtZSI6Ind1ZGl4aWFvYmFvemkiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE1Njc1OTE1NDYsInVzZXJOYW1lIjoid3VkaXhpYW9iYW96aSIsImlhdCI6MTU2NDk5OTU0Nn0.dEJzjgwwZCL6qh3NtluVSo0uZZZdUEzrNF2pLsUxprVOSE-pzaUVlOw2EmntXd4IpFs3qI0IwA4F51VOFIX65lc1RoX93AFeb44CYt9JpXKcGtGYWQr2D4nsNMaS7je8abtastBC8QIInCYtC7s8tvaAQRzYTvCZmSM8vtgu06g"
                            placeholder="">
                     <input type="text" id="project" class="form-control" value="fm" placeholder="">
-                    <input type="text" id="topic" class="form-control" value="all/group1" placeholder="">
-
+                    <input type="text" id="topic_1" class="form-control" value="group_1" placeholder="">
+                    <input type="text" id="topic_2" class="form-control" value="group_2" placeholder="">
 
                     <button id="connect" class="btn btn-default" type="submit">Connect</button>
                     <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect
@@ -38,8 +37,8 @@
         <div class="col-md-6">
             <form class="form-inline">
                 <div class="form-group">
-                    <label for="name">Send Message</label>
-                    <input type="text" id="name" class="form-control" placeholder="Your name here...">
+                    <label for="data">Send Message</label>
+                    <input type="text" id="data" class="form-control" placeholder="Your data here...">
                 </div>
                 <button id="send" class="btn btn-default">Send</button>
             </form>

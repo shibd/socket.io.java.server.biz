@@ -48,6 +48,7 @@ public class SocketIoRunner implements CommandLineRunner {
 		log.info("init project namespace subscribe:{}", projectKeys.keySet());
 		for (String projectId : projectKeys.keySet()) {
 			socketIoHandler.onSubscribeEvent("/" + projectId);
+			socketIoHandler.onAuthEvent("/" + projectId);
 		}
 
 		// 3. 启动服务

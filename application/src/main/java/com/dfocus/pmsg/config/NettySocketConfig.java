@@ -1,10 +1,7 @@
 package com.dfocus.pmsg.config;
 
 import com.corundumstudio.socketio.SocketIOServer;
-import com.dfocus.pmsg.common.utils.JwtRsaUtils;
-import com.dfocus.pmsg.service.atom.ISecretService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,9 +21,6 @@ public class NettySocketConfig {
 	@Resource
 	private SocketIoProperties socketIoProperties;
 
-	@Autowired
-	private ISecretService secretService;
-
 	@Bean
 	public SocketIOServer socketIOServer() {
 		/*
@@ -43,33 +37,20 @@ public class NettySocketConfig {
 		config.setPingInterval(socketIoProperties.getPingInterval());
 		// Ping消息超时时间（毫秒），默认60000，这个时间间隔内没有接收到心跳消息就会发送超时事件
 		config.setPingTimeout(socketIoProperties.getPingTimeout());
-		// 握手协议参数使用JWT的Token认证方案
-		config.setAuthorizationListener(data -> {
-			// jwt认证
-			String projectId = data.getSingleUrlParam("projectId");
-			String token = data.getSingleUrlParam("token");
-			return authenticate(token, projectId);
-
-		});
+		// 随机session_id防止chrom下客户端不能重复连接
+		config.setRandomSession(true);
+		// // 握手协议参数使用JWT的Token认证方案
+		// config.setAuthorizationListener(data -> {
+		// // jwt认证
+		// String projectId = data.getSingleUrlParam("projectId");
+		// String token = data.getSingleUrlParam("token");
+		// return true;
+		//
+		// });
 
 		final SocketIOServer server = new SocketIOServer(config);
 
 		return server;
-	}
-
-	/**
-	 * 根据jwt认证授权
-	 */
-	private boolean authenticate(String token, String projectId) {
-		try {
-			String publicKey = secretService.selectPublicKeyByProjectId(projectId);
-			JwtRsaUtils.verify(publicKey, token);
-		}
-		catch (Exception e) {
-			log.warn("auth fail: " + e.getMessage());
-			return false;
-		}
-		return true;
 	}
 
 }

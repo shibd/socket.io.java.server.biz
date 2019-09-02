@@ -47,9 +47,10 @@ public class WsMessageServiceImpl implements IWsMessageService {
 		log.info("project:{}|group:{}|message:{}", message.getProjectId(), message.getTopic(), message.getPlayLoad());
 
 		// 获取namespace
-		SocketIONamespace namespace = socketIOServer.getNamespace(message.getProjectId());
+		SocketIONamespace namespace = socketIOServer.getNamespace("/" + message.getProjectId());
 		if (namespace == null) {
 			log.error("该项目下没发现客户端");
+			return false;
 		}
 
 		// 获取room
