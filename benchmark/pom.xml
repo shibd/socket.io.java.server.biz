@@ -61,7 +61,7 @@
                                         implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.dfocus.pmsg.benchmark.StompClient</mainClass>
+                                    <mainClass>com.dfocus.pmsg.benchmark.SocketIOJavaClientBenchmark</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
