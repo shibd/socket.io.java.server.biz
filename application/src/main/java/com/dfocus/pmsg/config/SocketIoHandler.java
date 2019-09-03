@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author: baozi
@@ -31,7 +32,7 @@ public class SocketIoHandler {
 	/**
 	 * todo 认证缓存,注意线程安全,性能,内存溢出等
 	 */
-	private Set<String> authClients = new HashSet<>();
+	private Set<String> authClients = ConcurrentHashMap.newKeySet();
 
 	/**
 	 * 添加连接监听事件，监听是否与客户端连接到服务器
