@@ -10,17 +10,10 @@ import com.dfocus.pmsg.facade.model.WsMessage;
 public interface IWsMessageService {
 
 	/**
-	 * 发送消息到广播主题
-	 * @param wsTopicMessage
+	 * 发送消息
+	 * @param wsMessage
 	 * @return
 	 */
-	boolean sendToTopic(WsMessage.WsTopicMessage wsTopicMessage);
-
-	/**
-	 * 发送消息到用户
-	 * @param wsUserMessage
-	 * @return
-	 */
-	boolean sendToUser(WsMessage.WsUserMessage wsUserMessage);
+	boolean send(WsMessage wsMessage);
 
 }

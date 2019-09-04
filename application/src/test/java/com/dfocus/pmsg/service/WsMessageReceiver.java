@@ -34,10 +34,11 @@ public class WsMessageReceiver extends MsgcenterApplicationTests {
 	@Test
 	public void testReceive() throws JsonProcessingException {
 
-		WsMessage.WsTopicMessage wsTopicMessage = new WsMessage.WsTopicMessage("fm", "jiagouzu", "我是测试");
-
-		kafkaTemplate.send(wsTopic, wsTopicMessage.getClass().getName(),
-				objectMapper.writeValueAsString(wsTopicMessage));
+		// WsMessage.WsTopicMessage wsTopicMessage = new WsMessage.WsTopicMessage("fm",
+		// "jiagouzu", "我是测试");
+		//
+		// kafkaTemplate.send(wsTopic, wsTopicMessage.getClass().getName(),
+		// objectMapper.writeValueAsString(wsTopicMessage));
 	}
 
 }

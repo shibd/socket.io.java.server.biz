@@ -2,12 +2,14 @@
 <html>
 <head>
     <title>Hello WebSocket</title>
-    <link href="./webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="./main.css" rel="stylesheet">
-    <script src="./webjars/jquery/jquery.min.js"></script>
-    <script src="./webjars/sockjs-client/sockjs.min.js"></script>
-    <script src="./webjars/stomp-websocket/stomp.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.3.0/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
     <script src="./app.js"></script>
+    <script src="./socket.io.js"></script>
 </head>
 <body>
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
@@ -25,8 +27,8 @@
                            value="eyJ1c2VyTmFtZSI6Ind1ZGl4aWFvYmFvemkiLCJhbGciOiJSUzI1NiJ9.eyJleHAiOjE1Njc1OTE1NDYsInVzZXJOYW1lIjoid3VkaXhpYW9iYW96aSIsImlhdCI6MTU2NDk5OTU0Nn0.dEJzjgwwZCL6qh3NtluVSo0uZZZdUEzrNF2pLsUxprVOSE-pzaUVlOw2EmntXd4IpFs3qI0IwA4F51VOFIX65lc1RoX93AFeb44CYt9JpXKcGtGYWQr2D4nsNMaS7je8abtastBC8QIInCYtC7s8tvaAQRzYTvCZmSM8vtgu06g"
                            placeholder="">
                     <input type="text" id="project" class="form-control" value="fm" placeholder="">
-                    <input type="text" id="topic" class="form-control" value="all/group1" placeholder="">
-
+                    <input type="text" id="topic_1" class="form-control" value="group_1" placeholder="">
+                    <input type="text" id="topic_2" class="form-control" value="group_2" placeholder="">
 
                     <button id="connect" class="btn btn-default" type="submit">Connect</button>
                     <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect
@@ -38,8 +40,8 @@
         <div class="col-md-6">
             <form class="form-inline">
                 <div class="form-group">
-                    <label for="name">Send Message</label>
-                    <input type="text" id="name" class="form-control" placeholder="Your name here...">
+                    <label for="data">Send Message</label>
+                    <input type="text" id="data" class="form-control" placeholder="Your data here...">
                 </div>
                 <button id="send" class="btn btn-default">Send</button>
             </form>

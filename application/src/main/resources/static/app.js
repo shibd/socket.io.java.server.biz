@@ -1,4 +1,4 @@
-var stompClient = null;
+var socket = null;
 
 function setConnected(connected) {
     $("#connect").prop("disabled", connected);
@@ -14,94 +14,60 @@ function setConnected(connected) {
 
 function connect() {
     var token = $("#token").val();
-    var projectId = $("#project").val();
-    var socket = new SockJS('/msg-center/dfocus')
-    stompClient = Stomp.over(socket);
-    // stomp.heartbeat.outgoing = 20000; //若使用STOMP 1.1 版本，默认开启了心跳检测机制（默认值都是10000ms）
-    // stomp.heartbeat.incoming = 0; //客户端不从服务端接收心跳包
-    stompClient.connect({
-        token: token,
-        projectId: projectId
-    }, connectCallback, errorCallback);
-}
+    var projectId = $("#project").val()
 
-//连接成功时的回调函数
-function connectCallback() {
+    // var url = 'http://139.217.99.53:9092/' + projectId;
+    var url = 'http://localhost:9092/' + projectId;
+    socket = io.connect(url)
 
-    setConnected(true);
-
-    var project = $("#project").val();
-    var topic = $("#topic").val();
-
-    // 订阅广播消息
-    stompClient.subscribe('/topic/' + project + '/' + topic, function (greeting) {
-        showGreeting(JSON.parse(greeting.body).content);
+    // 1. 连接，认证，订阅
+    var _subscribes = [$("#topic_1").val(), $("#topic_2").val()];
+    var _authData = {projectId: projectId, token: token};
+    socket.on('connect', function () {
+        // 2. 认证
+        socket.emit('auth', _authData, function (authCode) {
+            console.log("auth ack code:" + authCode);
+            // 1.1 认证成功发起订阅
+            if (authCode === 'auth_success') {
+                socket.emit('subscribe', _subscribes, function (subscribeCode) {
+                    console.info('sub ack code:' + subscribeCode);
+                    if (subscribeCode === "sub_success") {
+                        setConnected(true);
+                    } else {
+                        disconnect();
+                    }
+                });
+            } else {
+                // 1.2 认证失败关闭连接
+                disconnect();
+            }
+        });
     });
 
-    // 订阅单用户消息
-    stompClient.subscribe('/user/queue/' + project, function (greeting) {
-        showGreeting('UserMessage: ' + JSON.parse(greeting.body).content);
+    // 其他事件socket-io.js会保证重连
+    //     "connect" "connecting" "disconnect" "error" "message" "connect_error"
+    //     "connect_timeout" "reconnect" "reconnect_error" "reconnect_failed";
+    //     "reconnect_attempt" "reconnecting" "ping" "pong";
+    socket.on('disconnect', function (data) {
+        setConnected(false);
+        console.info(data)
     });
-}
 
-var _breakReason;
-var INVALID_TOKEN = 'INVALID_TOKEN';
+    // 普通事件
+    socket.on('event_1', function (data) {
+        showGreeting('event_1' + data)
+    });
 
-//连接失败时的回调函数
-function errorCallback(error) {
-    // 错误取消重试
-    console.log('connect fail:' + error)
-
-    setConnected(false);
-
-    if (_breakReason === INVALID_TOKEN) {
-        // error callback will be called twice, that's why we record _breakReason with first call
-        // we should just leave the callback if _breakReason from last call exist and match invalid_token
-        return
-    }
-
-    // quit here since token is checked as invalid by server
-    // no need to re-connect with same arguments
-    if (
-        error &&
-        error.command === 'ERROR' &&
-        error.headers &&
-        error.headers.message &&
-        error.headers.message.includes('auth_fail')
-    ) {
-        _setBreakReason(INVALID_TOKEN)
-        console.log("auth fail, no reconnect")
-        return
-    }
-
-    // if no auth fail, reconnect
-    reconnect()
-}
-
-function reconnect() {
-    console.log("30s retrying connect")
-    setTimeout(() => {
-        connect();
-}, 30000
-)
-}
-
-function _setBreakReason(reason) {
-    _breakReason = reason
-
-    // clear _breakReason in 2s
-    setTimeout(() => {
-        _breakReason = null
-    }, 5000
-)
+    // 普通事件
+    socket.on('event_2', function (data) {
+        showGreeting('event_2' + data)
+    });
 
 }
 
 
 function disconnect() {
-    if (stompClient !== null) {
-        stompClient.disconnect();
-    }
+    socket.close();
     setConnected(false);
     console.log("Disconnected");
 }
@@ -111,13 +77,15 @@ function sendName() {
 
     var reqData = JSON.stringify({
         'projectId': $("#project").val(),
-        'topic': $("#topic").val(),
-        'playLoad': '{"content":' + '"' + $("#name").val() + '"}',
+        'topic': $("#topic_1").val(),
+        'event': 'event_1',
+        'playLoad': '{"content":' + '"' + $("#data").val() + '"}',
         'updateTime': 1557676800000
     });
 
     $.ajax({
         url: '/msg-center/ws_message/topic',
+        // url: 'http://139.217.99.53:8080/msg-center/ws_message/topic',
         method: 'post',
         data: reqData,
         dataType: 'json',

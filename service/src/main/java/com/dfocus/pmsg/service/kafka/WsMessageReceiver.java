@@ -49,15 +49,10 @@ public class WsMessageReceiver {
 		}
 
 		// 2. 推送消息到ws
-		if (object instanceof WsMessage.WsTopicMessage) {
-			WsMessage.WsTopicMessage wsTopicMessage = (WsMessage.WsTopicMessage) object;
-			log.info("handle topic message:{}", wsTopicMessage.getPlayLoad());
-			wsMessageService.sendToTopic(wsTopicMessage);
-		}
-		else if (object instanceof WsMessage.WsUserMessage) {
-			WsMessage.WsUserMessage wsUserMessage = (WsMessage.WsUserMessage) object;
-			log.info("handle user message:{}", wsUserMessage.getPlayLoad());
-			wsMessageService.sendToUser(wsUserMessage);
+		if (object instanceof WsMessage) {
+			WsMessage wsMessage = (WsMessage) object;
+			log.info("handle topic message:{}", wsMessage.getPlayLoad());
+			wsMessageService.send(wsMessage);
 		}
 		else {
 			log.warn("no care message type:{}", record.key());

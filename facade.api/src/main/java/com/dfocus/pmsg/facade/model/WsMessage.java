@@ -13,58 +13,31 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class WsMessage {
+public class WsMessage {
 
 	/**
 	 * 项目ID
 	 */
-	@ApiModelProperty(value = "项目ID", example = "fm")
+	@ApiModelProperty(value = "项目ID", example = "/fm")
 	private String projectId;
 
 	/**
-	 * 具体内容{json格式} 和前端约定好的json数据
+	 * 订阅主题
 	 */
-	@ApiModelProperty(value = "和前端约定好的json数据", example = "{\"content\":\"解析我,做你想做的事情\"}")
-	private String playLoad;
+	@ApiModelProperty(value = "订阅主题", example = "group_1")
+	private String topic;
 
 	/**
-	 * 更新时间
+	 * 订阅事件
 	 */
-	@ApiModelProperty(value = "更新时间", example = "1557676800000")
-	private long updateTime;
+	@ApiModelProperty(value = "订阅事件", example = "event_1")
+	private String event;
 
-	@Data
-	@NoArgsConstructor
-	public static class WsUserMessage extends WsMessage {
-
-		/**
-		 * 用户
-		 */
-		@ApiModelProperty(value = "用户id", example = "wudixiaobaozi")
-		private String user;
-
-		public WsUserMessage(String projectId, String user, String playLoad) {
-			super(projectId, playLoad, System.currentTimeMillis());
-			this.user = user;
-		}
-
-	}
-
-	@Data
-	@NoArgsConstructor
-	public static class WsTopicMessage extends WsMessage {
-
-		/**
-		 * 主题
-		 */
-		@ApiModelProperty(value = "订阅主题", example = "all/group1")
-		private String topic;
-
-		public WsTopicMessage(String projectId, String topic, String playLoad) {
-			super(projectId, playLoad, System.currentTimeMillis());
-			this.topic = topic;
-		}
-
-	}
+	/**
+	 * 内容 <br>
+	 * 和客户端约定好的json数据
+	 */
+	@ApiModelProperty(value = "内容", example = "{\"content\":\"解析我,做你想做的事情\"}")
+	private String playLoad;
 
 }

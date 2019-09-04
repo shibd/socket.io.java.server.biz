@@ -15,19 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface WsMessageFacade {
 
 	/**
-	 * 发送广播消息
+	 * 发送消息
 	 * @param message
 	 * @return
 	 */
 	@PostMapping("/send/topic")
-	Response<Boolean> sendMessage(@RequestBody WsMessage.WsTopicMessage message);
-
-	/**
-	 * 发送用户消息
-	 * @param message
-	 * @return
-	 */
-	@PostMapping("/send/user")
-	Response<Boolean> sendMessageToUser(@RequestBody WsMessage.WsUserMessage message);
+	Response<Boolean> sendMessage(@RequestBody WsMessage message);
 
 }
