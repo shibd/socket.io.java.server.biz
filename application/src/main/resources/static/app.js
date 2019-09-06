@@ -55,12 +55,13 @@ function connect() {
 
     // 普通事件
     socket.on('event_1', function (data) {
-        showGreeting('event_1' + data)
+        var data = JSON.parse(data);
+        showGreeting('event_1:' + data.playLoad + ' topic:' + data.topic)
     });
 
     // 普通事件
     socket.on('event_2', function (data) {
-        showGreeting('event_2' + data)
+        showGreeting('event_2:' + data.playLoad + ' topic:' + data.topic)
     });
 
 }

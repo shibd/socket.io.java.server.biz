@@ -5,6 +5,8 @@ import com.corundumstudio.socketio.SocketIONamespace;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.dfocus.pmsg.facade.model.WsMessage;
 import com.dfocus.pmsg.service.atom.IWsMessageService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,9 @@ public class WsMessageServiceImpl implements IWsMessageService {
 
 	@Autowired
 	SocketIOServer socketIOServer;
+
+	@Autowired
+	ObjectMapper objectMapper;
 
 	// SocketIOServer --> 多SocketIONamespace(NameSpace) --> 多Room（BroadcastOperations） -->
 	// 多SocketIOClient
@@ -56,9 +61,14 @@ public class WsMessageServiceImpl implements IWsMessageService {
 		// 获取room
 		BroadcastOperations roomOperations = namespace.getRoomOperations(message.getTopic());
 
-		roomOperations.sendEvent(StringUtils.isEmpty(message.getEvent()) ? "message" : message.getEvent(),
-				message.getPlayLoad());
-
+		try {
+			roomOperations.sendEvent(StringUtils.isEmpty(message.getEvent()) ? "message" : message.getEvent(),
+					objectMapper.writeValueAsString(message));
+		}
+		catch (JsonProcessingException e) {
+			log.error(e.getMessage(), e);
+			return false;
+		}
 		return true;
 	}
 

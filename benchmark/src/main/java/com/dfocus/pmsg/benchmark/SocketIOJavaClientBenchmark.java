@@ -15,9 +15,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author: baozi
  * @date: 2019/8/28 11:20
- * @description:
- * todo 该压测程序在1000连接时会报错java.lang.OutOfMemoryError: Unable to create new native thread
- * todo 待找原因
+ * @description: todo 该压测程序在1000连接时会报错java.lang.OutOfMemoryError: Unable to create new
+ * native thread todo 待找原因
  */
 public class SocketIOJavaClientBenchmark {
 
