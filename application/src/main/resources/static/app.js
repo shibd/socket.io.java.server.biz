@@ -77,10 +77,10 @@ function disconnect() {
 function sendName() {
 
     var reqData = JSON.stringify({
-        'payload': $("#project").val(),
+        'projectId': $("#project").val(),
         'topic': $("#topic_1").val(),
         'event': 'event_1',
-        'playLoad': '{"content":' + '"' + $("#data").val() + '"}',
+        'payload': '{"content":' + '"' + $("#data").val() + '"}',
         'updateTime': 1557676800000
     });
 
