@@ -38,12 +38,12 @@ public class JwtRsaUtilsTest {
 	/**
 	 * 到期时间
 	 */
-	private static long expiredTime = 60 * 60 * 24 * 30;
+	private static long expiredTime = 60 * 60 * 24 * 30 * 100;
 
 	@Test
 	public void testToken() {
 		Map<String, Object> map = new HashMap<>();
-		map.put("userName", "shuaige");
+		map.put("userName", "test");
 		try {
 			// 加密
 			String token = JwtRsaUtils.genToken(RSA_PRIVATE_KEY_FM, map, expiredTime);
@@ -56,7 +56,7 @@ public class JwtRsaUtilsTest {
 			// 断言
 			String userName = verify.get("userName").asString();
 			System.out.println(verify.get("userName").asString());
-			Assert.assertTrue(userName.equals("shuaige"));
+			Assert.assertTrue(userName.equals("test"));
 		}
 		catch (Exception e) {
 			e.printStackTrace();

@@ -18,7 +18,7 @@ function connect() {
 
     // var url = 'http://139.217.99.53:9092/' + projectId;
     var url = 'http://localhost:9092/' + projectId;
-    socket = io.connect(url)
+    socket = io.connect(url, { forceNew: true })
 
     // 1. 连接，认证，订阅
     var _subscribes = [$("#topic_1").val(), $("#topic_2").val()];
