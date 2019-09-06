@@ -51,7 +51,7 @@ public class WsMessageReceiver {
 		// 2. 推送消息到ws
 		if (object instanceof WsMessage) {
 			WsMessage wsMessage = (WsMessage) object;
-			log.info("handle topic message:{}", wsMessage.getPlayLoad());
+			log.info("handle topic message:{}", wsMessage.getPayload());
 			wsMessageService.send(wsMessage);
 		}
 		else {

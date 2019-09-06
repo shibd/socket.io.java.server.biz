@@ -49,7 +49,7 @@ public class WsMessageServiceImpl implements IWsMessageService {
 	@Override
 	public boolean send(WsMessage message) {
 
-		log.info("project:{}|group:{}|message:{}", message.getProjectId(), message.getTopic(), message.getPlayLoad());
+		log.info("project:{}|group:{}|message:{}", message.getProjectId(), message.getTopic(), message.getPayload());
 
 		// 获取namespace
 		SocketIONamespace namespace = socketIOServer.getNamespace("/" + message.getProjectId());

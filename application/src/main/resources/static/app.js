@@ -56,12 +56,12 @@ function connect() {
     // 普通事件
     socket.on('event_1', function (data) {
         var data = JSON.parse(data);
-        showGreeting('event_1:' + data.playLoad + ' topic:' + data.topic)
+        showGreeting('event_1:' + data.payload + ' topic:' + data.topic)
     });
 
     // 普通事件
     socket.on('event_2', function (data) {
-        showGreeting('event_2:' + data.playLoad + ' topic:' + data.topic)
+        showGreeting('event_2:' + data.payload + ' topic:' + data.topic)
     });
 
 }
@@ -77,7 +77,7 @@ function disconnect() {
 function sendName() {
 
     var reqData = JSON.stringify({
-        'projectId': $("#project").val(),
+        'payload': $("#project").val(),
         'topic': $("#topic_1").val(),
         'event': 'event_1',
         'playLoad': '{"content":' + '"' + $("#data").val() + '"}',

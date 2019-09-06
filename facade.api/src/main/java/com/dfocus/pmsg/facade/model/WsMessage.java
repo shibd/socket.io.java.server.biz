@@ -38,6 +38,6 @@ public class WsMessage {
 	 * 和客户端约定好的json数据
 	 */
 	@ApiModelProperty(value = "内容", example = "{\"content\":\"解析我,做你想做的事情\"}")
-	private String playLoad;
+	private String payload;
 
 }
