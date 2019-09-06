@@ -1,7 +1,7 @@
-package com.dfocus.pmsg.service;
+package com.baozi.pmsg.service;
 
-import com.dfocus.pmsg.MsgcenterApplicationTests;
-import com.dfocus.pmsg.facade.model.WsMessage;
+import com.baozi.pmsg.MsgcenterApplicationTests;
+import com.baozi.pmsg.facade.model.WsMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;

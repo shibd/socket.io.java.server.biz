@@ -1,7 +1,7 @@
-package com.dfocus.pmsg.service;
+package com.baozi.pmsg.service;
 
-import com.dfocus.pmsg.MsgcenterApplicationTests;
-import com.dfocus.pmsg.service.atom.ISecretService;
+import com.baozi.pmsg.MsgcenterApplicationTests;
+import com.baozi.pmsg.service.atom.ISecretService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

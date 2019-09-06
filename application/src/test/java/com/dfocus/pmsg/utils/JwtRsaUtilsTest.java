@@ -1,7 +1,7 @@
-package com.dfocus.pmsg.utils;
+package com.baozi.pmsg.utils;
 
 import com.auth0.jwt.interfaces.Claim;
-import com.dfocus.pmsg.common.utils.JwtRsaUtils;
+import com.baozi.pmsg.common.utils.JwtRsaUtils;
 import org.junit.Assert;
 import org.junit.Test;
 

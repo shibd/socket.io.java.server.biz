@@ -29,4 +29,4 @@ docker run \
  -e JAVA_OPTS='-XX:+UseParallelOldGC' \
  -p 8080:8080 \
  --name $APP_NAME \
- harbor.dfocus.co/library/$APP_NAME:$TAG
+ harbor.baozi.co/library/$APP_NAME:$TAG
