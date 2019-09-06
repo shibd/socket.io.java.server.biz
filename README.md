@@ -1,2 +1,2 @@
 # msg-center
-基于Spring WebSocket STOMP的分布式消息推送中心
+基于Socket IO实现的分布式消息推送中心
