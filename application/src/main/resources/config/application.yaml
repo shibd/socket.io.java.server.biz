@@ -6,7 +6,7 @@ spring:
     favicon:
       enabled: true
 # 跨域
-cors.enable: true
+cors.enable: false
 server:
   port: 8080
   servlet.context-path: /msg-center
