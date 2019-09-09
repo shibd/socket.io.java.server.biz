@@ -1,4 +1,4 @@
-# socket.io.java.client.biz
+# socket.io.java.server.biz
 
 ![][license-url]
 
