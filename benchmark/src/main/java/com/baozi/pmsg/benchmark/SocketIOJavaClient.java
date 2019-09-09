@@ -30,7 +30,7 @@ public class SocketIOJavaClient {
 		optionsFm.timeout = 20000; // 连接超时时间(ms)
 		optionsFm.forceNew = true;
 
-		Socket socketFm = IO.socket("http://139.217.99.53:9092/" + projectIdFm, optionsFm);
+		Socket socketFm = IO.socket("http://127.0.0.1:9095/" + projectIdFm, optionsFm);
 		HashMap<String, String> authData = new HashMap<>(2);
 		authData.put("projectId", projectIdFm);
 		authData.put("token", token);

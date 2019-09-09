@@ -20,7 +20,7 @@ public class SocketIONettyServer {
 		// 设置主机名
 		config.setHostname("localhost");
 		// 设置监听端口
-		config.setPort(9092);
+		config.setPort(9095);
 		// 协议升级超时时间（毫秒），默认10秒。HTTP握手升级为ws协议超时时间
 		config.setUpgradeTimeout(10000);
 		// Ping消息超时时间（毫秒），默认60秒，这个时间间隔内没有接收到心跳消息就会发送超时事件
