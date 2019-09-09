@@ -27,25 +27,6 @@ public class WsMessageServiceImpl implements IWsMessageService {
 	@Autowired
 	ObjectMapper objectMapper;
 
-	// SocketIOServer --> 多SocketIONamespace(NameSpace) --> 多Room（BroadcastOperations） -->
-	// 多SocketIOClient
-	// send(event, ) send（event, )
-
-	// NameSpaceClient 拥有 NameSpace
-
-	// server --> namespaces
-	// SocketIONamespace namespace = server.getNamespace("sdsd");
-	//
-	// // namespace --> rooms
-	// BroadcastOperations roomOperations = namespace.getRoomOperations();
-	// roomOperations.send();
-	//
-	// // room --> clients
-	// Collection<SocketIOClient> clients = roomOperations.getClients();
-	// for (SocketIOClient client : clients) {
-	// client.send();
-	// }
-
 	@Override
 	public boolean send(WsMessage message) {
 
@@ -54,7 +35,7 @@ public class WsMessageServiceImpl implements IWsMessageService {
 		// 获取namespace
 		SocketIONamespace namespace = socketIOServer.getNamespace("/" + message.getProjectId());
 		if (namespace == null) {
-			log.error("该项目下没发现客户端");
+			log.error("该项目下没发现客户端, projectId:{}", message.getProjectId());
 			return false;
 		}
 
