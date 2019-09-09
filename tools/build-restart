@@ -25,7 +25,7 @@ echo "test and build success, start new process now"
 java \
 -jar \
 -DLOG_PATH_ROOT=./logs \
--Dcors.enable=true \
+-Dcors.enable=false \
 $APP_PATH/application/target/$APP_NAME.application.jar \
 #2>&1 1>/dev/null &
 #-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000 \
