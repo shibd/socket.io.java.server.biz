@@ -1,4 +1,4 @@
-package com.dfocus.pmsg.common;
+package com.baozi.pmsg.common;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
@@ -24,10 +24,10 @@ import java.util.Map;
 public class CodeGenerator {
 
 	// 生成文件所在项目路径,如果使用mybatisd-generator脚本不设置
-	private static String baseProjectPath = "/Users/baozi/workspace/dfocus/msg-center";
+	private static String baseProjectPath = "/Users/baozi/workspace/baozi/msg-center";
 
 	// 基本包名
-	private static String basePackage = "com.dfocus.pmsg.common";
+	private static String basePackage = "com.baozi.pmsg.common";
 
 	// 作者
 	private static String authorName = "baozi";
@@ -45,7 +45,7 @@ public class CodeGenerator {
 
 	private static String username = "root";
 
-	private static String password = "dfocus@dm";
+	private static String password = "baozi@dm";
 
 	public static void main(String[] args) {
 		if (args.length > 0 && !StringUtils.isEmpty(args[0])) {

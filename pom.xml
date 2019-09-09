@@ -4,72 +4,193 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.dfocus.mint</groupId>
-        <artifactId>mint-parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
-        <relativePath/>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.6.RELEASE</version>
     </parent>
 
-    <groupId>com.dfocus.pmsg</groupId>
-    <artifactId>msg-center</artifactId>
+    <groupId>com.baozi.pmsg</groupId>
+    <artifactId>socket.io.java.server.biz</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <properties/>
+    <properties>
+
+        <!-- common set-->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+
+        <!-- 下面版本是根据导入的dependencies中获取的,不属于自己组装,只是为了子model统一,在父model中统一再定义一下-->
+        <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
+        <spring.cloud.version>Greenwich.SR2</spring.cloud.version>
+        <spring.web.version>5.1.8.RELEASE</spring.web.version>
+        <spring.cloud.openfeign.version>2.1.2.RELEASE</spring.cloud.openfeign.version>
+        <spring-cloud-sleuth.version>2.1.2.RELEASE</spring-cloud-sleuth.version>
+        <spring-data-common.version>2.1.9.RELEASE</spring-data-common.version>
+        <spring-cloud-netflixn.version>2.1.2.RELEASE</spring-cloud-netflixn.version>
+
+        <!-- other -->
+        <mybatis-plus.version>3.1.2</mybatis-plus.version>
+        <freemarker.version>2.3.28</freemarker.version>
+        <swagger.version>2.6.1</swagger.version>
+        <jwt.version>3.1.0</jwt.version>
+        <mint.version>1.0-SNAPSHOT</mint.version>
+        <netty-socketio.version>1.7.17</netty-socketio.version>
+
+    </properties>
 
     <dependencyManagement>
         <dependencies>
-            <!-- sub modules -->
+
+            <!--import spring cloud-->
             <dependency>
-                <groupId>com.dfocus.pmsg</groupId>
-                <artifactId>msg-center.application</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring.cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- 为了统一,统一声明-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+                <version>${spring-cloud-netflixn.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dfocus.pmsg</groupId>
-                <artifactId>msg-center.service</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+                <version>${spring-cloud-netflixn.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dfocus.pmsg</groupId>
-                <artifactId>msg-center.manager</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-openfeign</artifactId>
+                <version>${spring.cloud.openfeign.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dfocus.pmsg</groupId>
-                <artifactId>msg-center.common</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring.web.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dfocus.pmsg</groupId>
-                <artifactId>msg-center.integration</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-sleuth</artifactId>
+                <version>${spring-cloud-sleuth.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dfocus.pmsg</groupId>
-                <artifactId>msg-center.facade.api</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-commons</artifactId>
+                <version>${spring-data-common.version}</version>
+            </dependency>
+
+            <!-- mybatis-plus-starter -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dfocus.pmsg</groupId>
-                <artifactId>msg-center.facade.impl</artifactId>
-                <version>${project.version}</version>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-generator</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${freemarker.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.auth0</groupId>
                 <artifactId>java-jwt</artifactId>
-                <version>3.1.0</version>
+                <version>${jwt.version}</version>
             </dependency>
 
+            <!--接口文档-->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+
+            <!--other-->
+            <dependency>
+                <groupId>io.github.shibd</groupId>
+                <artifactId>mint-scaffold</artifactId>
+                <version>${mint.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.corundumstudio.socketio</groupId>
+                <artifactId>netty-socketio</artifactId>
+                <version>${netty-socketio.version}</version>
+            </dependency>
+
+            <!-- sub modules -->
+            <dependency>
+                <groupId>com.baozi.pmsg</groupId>
+                <artifactId>msg-center.application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baozi.pmsg</groupId>
+                <artifactId>msg-center.service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baozi.pmsg</groupId>
+                <artifactId>msg-center.common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baozi.pmsg</groupId>
+                <artifactId>msg-center.facade.api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baozi.pmsg</groupId>
+                <artifactId>msg-center.facade.impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.spotify</groupId>
+                    <artifactId>dockerfile-maven-plugin</artifactId>
+                    <version>1.4.10</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
+            <!--git提交记录留痕-->
             <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
+            </plugin>
+            <!--代码格式化插件-->
+            <plugin>
+                <groupId>io.spring.javaformat</groupId>
+                <artifactId>spring-javaformat-maven-plugin</artifactId>
+                <version>0.0.15</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <inherited>true</inherited>
+                        <goals>
+                            <goal>validate</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -79,8 +200,6 @@
         <module>common</module>
         <module>facade.api</module>
         <module>facade.impl</module>
-        <module>integration</module>
-        <module>manager</module>
         <module>service</module>
         <module>benchmark</module>
     </modules>

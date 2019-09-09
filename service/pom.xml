@@ -3,8 +3,8 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>msg-center</artifactId>
-        <groupId>com.dfocus.pmsg</groupId>
+        <groupId>com.baozi.pmsg</groupId>
+        <artifactId>socket.io.java.server.biz</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -14,37 +14,19 @@
     <dependencies>
         <!--内部依赖-->
         <dependency>
-            <groupId>com.dfocus.pmsg</groupId>
-            <artifactId>msg-center.manager</artifactId>
+            <groupId>com.baozi.pmsg</groupId>
+            <artifactId>msg-center.common</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dfocus.pmsg</groupId>
+            <groupId>com.baozi.pmsg</groupId>
             <artifactId>msg-center.facade.api</artifactId>
         </dependency>
-
 
         <!-- netty-socketio-->
         <dependency>
             <groupId>com.corundumstudio.socketio</groupId>
             <artifactId>netty-socketio</artifactId>
-            <version>1.7.17</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>io.netty</groupId>-->
-            <!--<artifactId>netty-resolver</artifactId>-->
-            <!--<version>4.1.15.Final</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>io.netty</groupId>-->
-            <!--<artifactId>netty-transport</artifactId>-->
-            <!--<version>4.1.15.Final</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>io.socket</groupId>-->
-            <!--<artifactId>socket.io-client</artifactId>-->
-            <!--<version>1.0.0</version>-->
-        <!--</dependency>-->
-
     </dependencies>
 
 
