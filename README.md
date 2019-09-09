@@ -17,7 +17,7 @@
 ## 快速启动
 
 1. `git clone https://github.com/DFocusFE/socket.io.java.server.biz.git`
-2. `sh socket.io.java.server.biz/tool/build-restart`
+2. `sh socket.io.java.server.biz/tools/build-restart`
 3. 打开测试页面`http://127.0.0.1:8080/msg-center`
 4. 连接服务端,发送消息
 ![](./doc/ui.jpg)
