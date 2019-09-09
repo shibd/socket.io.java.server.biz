@@ -26,7 +26,7 @@ public class SecretController {
 
 	@ApiOperation("接口: 查询所有公钥")
 	@RequestMapping(method = RequestMethod.GET, value = "/public_keys")
-    Response<Map<String, String>> getPublicKeys() {
+	Response<Map<String, String>> getPublicKeys() {
 		return Response.success(projectKeyService.selectPublicKeys());
 	}
 

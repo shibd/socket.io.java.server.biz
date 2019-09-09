@@ -1,7 +1,7 @@
 package com.baozi.pmsg.runner;
 
 import com.corundumstudio.socketio.SocketIOServer;
-import com.baozi.pmsg.MsgcenterApplication;
+import com.baozi.pmsg.MsgCenterApplication;
 import com.baozi.pmsg.config.SocketIoHandler;
 import com.baozi.pmsg.service.atom.ISecretService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ public class SocketIoRunner implements CommandLineRunner {
 	private ISecretService iSecretService;
 
 	public static void main(String[] args) {
-		SpringApplication.run(MsgcenterApplication.class, args);
+		SpringApplication.run(MsgCenterApplication.class, args);
 	}
 
 	@Override
@@ -54,8 +54,8 @@ public class SocketIoRunner implements CommandLineRunner {
 		}
 
 		// 3. 启动服务
-		log.info("ServerRunner 开始启动啦...");
 		server.start();
+        log.info("ServerRunner start...");
 	}
 
 }

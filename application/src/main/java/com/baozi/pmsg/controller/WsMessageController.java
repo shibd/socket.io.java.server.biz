@@ -35,7 +35,7 @@ public class WsMessageController {
 	 */
 	@ApiOperation("接口: 发送广播消息")
 	@GetMapping("/test")
-    Response<Boolean> sendTestMessage() {
+	Response<Boolean> sendTestMessage() {
 
 		SocketIONamespace namespace = socketIOServer.getNamespace("/fm");
 		if (namespace == null) {

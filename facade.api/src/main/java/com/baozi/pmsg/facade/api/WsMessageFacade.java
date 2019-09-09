@@ -20,6 +20,6 @@ public interface WsMessageFacade {
 	 * @return
 	 */
 	@PostMapping("/send/topic")
-    Response<Boolean> sendMessage(@RequestBody WsMessage message);
+	Response<Boolean> sendMessage(@RequestBody WsMessage message);
 
 }

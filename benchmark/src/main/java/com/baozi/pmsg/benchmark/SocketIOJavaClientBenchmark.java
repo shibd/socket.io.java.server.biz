@@ -3,7 +3,6 @@ package com.baozi.pmsg.benchmark;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +14,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author: baozi
  * @date: 2019/8/28 11:20
- * @description: todo 该压测程序在1000连接时会报错java.lang.OutOfMemoryError: Unable to create new
- * native thread todo 待找原因
+ * @description: 该压测程序在1000连接时会报错java.lang.OutOfMemoryError: Unable to create new native
+ * thread 待找原因
  */
 public class SocketIOJavaClientBenchmark {
 
@@ -26,7 +25,7 @@ public class SocketIOJavaClientBenchmark {
 
 	private static final List<String> subscribes = Arrays.asList("group_1", "group_2");
 
-	private static String url = "http://139.217.99.53:9092/";
+	private static String url = "http://127.0.0.1:9095/";
 
 	private static IO.Options optionsFm;
 

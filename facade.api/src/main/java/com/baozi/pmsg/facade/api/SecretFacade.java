@@ -20,7 +20,7 @@ public interface SecretFacade {
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/{projectId}")
-    Response<String> getPublicKey(@PathVariable String projectId);
+	Response<String> getPublicKey(@PathVariable String projectId);
 
 	/**
 	 * 新增或更新公钥

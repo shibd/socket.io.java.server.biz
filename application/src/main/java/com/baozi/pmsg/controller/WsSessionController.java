@@ -1,6 +1,7 @@
 package com.baozi.pmsg.controller;
 
 import com.baozi.mint.web.rsp.Response;
+import com.baozi.pmsg.service.atom.ISecretService;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIONamespace;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -26,31 +27,32 @@ public class WsSessionController {
 	@Autowired
 	SocketIOServer server;
 
+	@Autowired
+	ISecretService secretService;
+
 	@ApiOperation("接口: 获取会话列表")
 	@RequestMapping(method = RequestMethod.GET, value = "/list")
-    Response<List<Map<String, Object>>> getSessions() {
-
-		SocketIONamespace namespace = server.getNamespace("/fm");
+	Response<List<Map<String, Object>>> getSessions() {
 
 		List<Map<String, Object>> list = new ArrayList<>();
-		Collection<SocketIOClient> clients = namespace.getAllClients();
-		for (SocketIOClient client : clients) {
-			Map<String, Object> map = new HashMap<>();
-			map.put("allRomms", client.getAllRooms());
-			map.put("namespace", client.getNamespace().getName());
-			map.put("sessionId", client.getSessionId());
-			map.put("remoteAddress", client.getRemoteAddress());
-			list.add(map);
+
+		Map<String, String> projectMaps = secretService.selectPublicKeys();
+		for (String projectId : projectMaps.keySet()) {
+			SocketIONamespace namespace = server.getNamespace("/" + projectId);
+			Collection<SocketIOClient> clients = namespace.getAllClients();
+			for (SocketIOClient client : clients) {
+				Map<String, Object> map = new HashMap<>();
+				map.put("allRomms", client.getAllRooms());
+				map.put("namespace", client.getNamespace().getName());
+				map.put("sessionId", client.getSessionId());
+				map.put("remoteAddress", client.getRemoteAddress());
+				list.add(map);
+			}
+
 		}
 		return Response.success(list);
 	}
 
-	// @ApiOperation("接口: 获取自己定义的属性")
-	// @RequestMapping(method = RequestMethod.GET, value = "/my_define/list")
-	// Response<List<WsSessionDto>> getMyDefineSessions() {
-	// return Response.success(iSessionService.getSessions());
-	// }
-	//
 	@ApiOperation("接口: 获取所有会话数目")
 	@RequestMapping(method = RequestMethod.GET, value = "/size")
 	Response<Integer> getSessionNumber() {

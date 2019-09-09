@@ -23,29 +23,4 @@ public class CorsConfig implements WebMvcConfigurer {
 		registry.addMapping("/**").allowedOrigins("*").allowedMethods("PUT", "DELETE", "GET", "POST");
 	}
 
-	// @Bean
-	// HandlerInterceptor localInterceptor() {
-	// return new HandlerInterceptor() {
-	// @Override
-	// public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-	// Object handler)
-	// throws Exception {
-	// return false;
-	// }
-	// };
-	// }
-	//
-	// @Override
-	// public void addInterceptors(InterceptorRegistry registry) {
-	// registry.addInterceptor(localInterceptor()).addPathPatterns("/**").excludePathPatterns("/user/login")
-	// .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**",
-	// "/swagger-ui.html/**");
-	// }
-	//
-	// @Override
-	// public void addResourceHandlers(ResourceHandlerRegistry registry) {
-	// registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
-	// registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
-	// }
-
 }

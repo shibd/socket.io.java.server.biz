@@ -13,7 +13,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-/** 统一异常处理 */
+/**
+ * @author baozi
+ * @Date: 2019/6/23 17:28
+ * @Description:
+ */
 @Slf4j
 @RestControllerAdvice
 public class HandleExceptionFriendly {
