@@ -15,7 +15,12 @@
 相关文档参见: [wiki](https://github.com/DFocusFE/socket.io.java.server.biz/wiki)
 
 ## 快速启动
-
+0. 配置好Maven, 确保可以使用`mvn`命令，安装包到本地
+``` shell
+git clone https://github.com/shibd/mint-scaffold.git
+cd mint-scaffold
+mvn clean install
+```
 1. `git clone https://github.com/DFocusFE/socket.io.java.server.biz.git`
 2. `sh socket.io.java.server.biz/tools/build-restart`
 3. 打开测试页面`http://127.0.0.1:8080/msg-center`
