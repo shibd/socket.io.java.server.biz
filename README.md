@@ -31,6 +31,6 @@ mvn clean install
 
 ## LICENSE
 
-[MIT License](https://raw.githubusercontent.com/DFocusFE/socket.io.java.client.biz/master/LICENSE)
+[MIT License](https://raw.githubusercontent.com/DFocusGroup/socket.io.java.server.biz/master/LICENSE)
 
-[license-url]: https://img.shields.io/github/license/dfocusfe/socket.io.java.client.biz
+[license-url]: https://img.shields.io/github/license/DFocusGroup/socket.io.java.server.biz
