@@ -1,5 +1,7 @@
 # socket.io.java.server.biz
 
+[![Build Status](https://travis-ci.org/DFocusGroup/socket.io.java.server.biz.png?branch=master)](https://travis-ci.org/DFocusGroup/socket.io.java.server.biz)
+[![Codecov](https://codecov.io/gh/DFocusGroup/socket.io.java.server.biz/branch/master/graph/badge.svg)](https://codecov.io/gh/DFocusGroup/socket.io.java.server.biz/branch/master)
 ![][license-url]
 
 基于netty-socketio实现的推送中心，屏蔽使用细节，使用socketio协议实现项目隔离，多播，
