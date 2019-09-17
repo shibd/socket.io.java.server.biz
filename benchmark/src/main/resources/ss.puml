@@ -1,16 +1,39 @@
 @startuml
-
-
+alt successful case
+== Websocket建立 ==
 客户端 <-> 推送中心: 建立WS链接
+
+== 客户端鉴权 ==
 客户端 -> 推送中心: 发起鉴权消息，带入projectId和token
-推送中心 -> 推送中心: 鉴权，维护所有鉴权的连接
+activate 客户端 #FFBBBB
+
+推送中心 -> 推送中心: 鉴权成功，维护所有鉴权的连接
 
 客户端 <- 推送中心: 鉴权成功响应auth_success，失败auth_fail
 
-客户端 -> 推送中心: 失败，就退出，成功发起订阅消息
+客户端 --> 客户端: auth_fail退出
+deactivate 客户端
+|||
 
-推送中心 -> 客户端: 检查客户端是否鉴权，如果鉴权就订阅返回sub_success，如果没鉴权就返回sub_fail
+== 订阅主题 ==
+客户端 -> 推送中心: 发起订阅消息
+activate 客户端 #DAEBBA
+推送中心 -> 推送中心: 检查客户端是否鉴权
+
+推送中心 -> 客户端: 如果鉴权就订阅返回sub_success，如果没鉴权就返回sub_fail
 
 客户端 -> 客户端: 根据响应状态，决定正常退出或异常
+
+客户端 --> 客户端: 使用on监听事件，执行业务逻辑
+deactivate 客户端
+
+
+== 推送消息 ==
+服务端 -> 推送中心: 使用约定格式(project, topic, payload)调用推送中心
+activate 推送中心 #DAEBBA
+推送中心 -> 推送中心: 根据参数找到一批客户端
+推送中心 -> 客户端: 推送消息
+deactivate 推送中心
+
 
 @enduml
