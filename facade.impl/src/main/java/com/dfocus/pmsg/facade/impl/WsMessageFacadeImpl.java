@@ -1,8 +1,8 @@
 package com.dfocus.pmsg.facade.impl;
 
-import com.dfocus.mint.web.rsp.Response;
 import com.dfocus.pmsg.facade.api.WsMessageFacade;
 import com.dfocus.pmsg.facade.model.WsMessage;
+import com.dfocus.pmsg.facade.web.rsp.Response;
 import com.dfocus.pmsg.service.atom.IWsMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;

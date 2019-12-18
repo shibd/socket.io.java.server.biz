@@ -1,7 +1,7 @@
 package com.dfocus.pmsg.facade.impl;
 
-import com.dfocus.mint.web.rsp.Response;
 import com.dfocus.pmsg.facade.api.SecretFacade;
+import com.dfocus.pmsg.facade.web.rsp.Response;
 import com.dfocus.pmsg.service.atom.ISecretService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

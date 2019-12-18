@@ -1,6 +1,6 @@
 package com.dfocus.pmsg.controller;
 
-import com.dfocus.mint.web.rsp.Response;
+import com.dfocus.pmsg.facade.web.rsp.Response;
 import com.dfocus.pmsg.service.atom.ISecretService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

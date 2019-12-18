@@ -1,6 +1,6 @@
 package com.dfocus.pmsg.facade.api;
 
-import com.dfocus.mint.web.rsp.Response;
+import com.dfocus.pmsg.facade.web.rsp.Response;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

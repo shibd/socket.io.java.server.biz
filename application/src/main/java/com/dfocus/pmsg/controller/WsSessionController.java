@@ -1,6 +1,6 @@
 package com.dfocus.pmsg.controller;
 
-import com.dfocus.mint.web.rsp.Response;
+import com.dfocus.pmsg.facade.web.rsp.Response;
 import com.dfocus.pmsg.service.atom.ISessionService;
 import com.dfocus.pmsg.service.dto.WsSessionDto;
 import com.dfocus.pmsg.vo.WsProjectSessionVo;
@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author baozi
@@ -39,6 +36,7 @@ public class WsSessionController {
 	@ApiOperation("接口: 获取会话列表")
 	@RequestMapping(method = RequestMethod.GET, value = "/list")
 	Response<List<WsProjectSessionVo>> getSessions() {
+
 
 		// 预处理 <projectId, <user, userSession>>
 		Map<String, Map<String, WsProjectSessionVo.WsUserSessionVo>> wsProjectSessionMaps = new HashMap<>();

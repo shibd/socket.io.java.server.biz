@@ -1,6 +1,6 @@
 package com.dfocus.pmsg.support;
 
-import com.dfocus.mint.web.rsp.Response;
+import com.dfocus.pmsg.facade.web.rsp.Response;
 import com.dfocus.pmsg.service.common.constant.ResultCode;
 import com.dfocus.pmsg.service.common.exception.BizException;
 import com.dfocus.pmsg.service.common.exception.SystemRuntimeException;
