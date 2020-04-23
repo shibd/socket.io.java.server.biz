@@ -18,7 +18,7 @@ public class WsMessage {
 	/**
 	 * 项目ID
 	 */
-	@ApiModelProperty(value = "项目ID", example = "/fm")
+	@ApiModelProperty(value = "项目ID", example = "fm")
 	private String projectId;
 
 	/**
