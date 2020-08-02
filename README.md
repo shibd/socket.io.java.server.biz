@@ -14,7 +14,9 @@
 
 配套[socket.io.client.biz](https://github.com/DFocusFE/socket.io.client.biz)客户端和[socket.io.java.client.biz](https://github.com/DFocusFE/socket.io.java.client.biz)客户端使用
 
-相关文档参见: [wiki](https://github.com/DFocusFE/socket.io.java.server.biz/wiki)
+相关文档参见: 
+- [wiki](https://github.com/DFocusFE/socket.io.java.server.biz/wiki)   
+- [博客](https://shibd.github.io/2019/08/15/Message-Center-1/)
 
 ## 快速启动
 1. 配置好Maven, 确保可以使用`mvn`命令，安装包到本地
