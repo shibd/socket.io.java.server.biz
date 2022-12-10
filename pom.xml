@@ -24,7 +24,7 @@
         <!-- 下面版本是根据导入的dependencies中获取的,不属于自己组装,只是为了子model统一,在父model中统一再定义一下-->
         <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
         <spring.cloud.version>Greenwich.SR2</spring.cloud.version>
-        <spring.web.version>5.1.8.RELEASE</spring.web.version>
+        <spring.web.version>6.0.0</spring.web.version>
         <spring.cloud.openfeign.version>2.1.2.RELEASE</spring.cloud.openfeign.version>
         <spring-cloud-sleuth.version>2.1.2.RELEASE</spring-cloud-sleuth.version>
         <spring-data-common.version>2.1.9.RELEASE</spring-data-common.version>
